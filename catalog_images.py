@@ -4,6 +4,7 @@ from datetime import datetime
 from pathlib import Path
 from PIL import Image
 from tqdm import tqdm
+import hashlib
 
 # Supported image extensions
 IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.tiff'}
@@ -22,10 +23,23 @@ def init_db(conn):
             modified_at TEXT,
             filesize INTEGER,
             width INTEGER,
-            height INTEGER
+            height INTEGER,
+            filetype TEXT,
+            filehash TEXT
         );
     """)
     conn.commit()
+
+def get_md5(file_path, chunk_size=8192):
+    hash_md5 = hashlib.md5()
+    try:
+        with open(file_path, "rb") as f:
+            for chunk in iter(lambda: f.read(chunk_size), b""):
+                hash_md5.update(chunk)
+        return hash_md5.hexdigest()
+    except Exception as e:
+        print(f"Error hashing {file_path}: {e}")
+        return None
 
 def get_image_info(file_path):
     try:
@@ -36,11 +50,14 @@ def get_image_info(file_path):
         # Get image dimensions
         with Image.open(file_path) as img:
             width, height = img.size
+            filetype = img.format
 
-        return filesize, width, height
+        filehash = get_md5(file_path)
+
+        return filesize, width, height, filetype, filehash
     except Exception as e:
         print(f"Error reading image info for {file_path}: {e}")
-        return None, None, None
+        return None, None, None, None, None
 
 def scan_images(base_dir, conn):
     base_path = Path(base_dir)
@@ -52,16 +69,18 @@ def scan_images(base_dir, conn):
             stat = file_path.stat()
             created_at = datetime.fromtimestamp(stat.st_ctime).isoformat()
             modified_at = datetime.fromtimestamp(stat.st_mtime).isoformat()
-            filesize, width, height = get_image_info(file_path)
+            filesize, width, height, filetype, filehash = get_image_info(file_path)
             
             try:
                 c.execute("""
-                    INSERT OR IGNORE INTO images (path, filename, created_at, modified_at, filesize, width, height)
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
-                """, (rel_path, file_path.name, created_at, modified_at, filesize, width, height))
+                    INSERT OR IGNORE INTO images (path, filename, created_at, modified_at, filesize, width, height, filetype, filehash)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (rel_path, file_path.name, created_at, modified_at, filesize, width, height, filetype, filehash))
             except Exception as e:
                 print(f"Error processing {file_path}: {e}")
     conn.commit()
+
+
 
 def main():
     base_dir = input("Enter path to your image directory: ").strip()
