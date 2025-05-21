@@ -40,6 +40,28 @@ def get_md5(file_path, chunk_size=8192):
     except Exception as e:
         print(f"Error hashing {file_path}: {e}")
         return None
+    
+
+def find_duplicates(db_path):
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+
+    c.execute("""
+        SELECT filehash, COUNT(*) as count
+        FROM images
+        GROUP BY filehash
+        HAVING count > 1
+    """)
+    duplicate_hashes = [row[0] for row in c.fetchall()]
+
+    duplicates = []
+    for h in duplicate_hashes:
+        c.execute("SELECT * FROM images WHERE filehash = ?", (h,))
+        duplicates.append(c.fetchall())
+
+    conn.close()
+    return duplicates
+
 
 def get_image_info(file_path):
     try:
@@ -80,8 +102,6 @@ def scan_images(base_dir, conn):
                 print(f"Error processing {file_path}: {e}")
     conn.commit()
 
-
-
 def main():
     base_dir = input("Enter path to your image directory: ").strip()
     if not os.path.isdir(base_dir):
@@ -92,6 +112,10 @@ def main():
     init_db(conn)
     scan_images(base_dir, conn)
     print("✅ Done indexing images.")
+
+    suspected_duplicates = find_duplicates(DB_PATH)
+    for file_path in suspected_duplicates:
+        print(f"Potential duplicate: {file_path}")
 
 if __name__ == "__main__":
     main()
