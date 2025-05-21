@@ -1,5 +1,3 @@
-
-
 import os
 import sqlite3
 from datetime import datetime
@@ -16,15 +14,33 @@ DB_PATH = 'image_metadata.db'
 def init_db(conn):
     c = conn.cursor()
     c.execute("""
-        CREATE TABLE IF NOT EXISTS images (
+        CREATE TABLE images (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             path TEXT UNIQUE,
             filename TEXT,
             created_at TEXT,
-            modified_at TEXT
-        )
+            modified_at TEXT,
+            filesize INTEGER,
+            width INTEGER,
+            height INTEGER
+        );
     """)
     conn.commit()
+
+def get_image_info(file_path):
+    try:
+        # Get file size in bytes
+        stat = os.stat(file_path)
+        filesize = stat.st_size
+
+        # Get image dimensions
+        with Image.open(file_path) as img:
+            width, height = img.size
+
+        return filesize, width, height
+    except Exception as e:
+        print(f"Error reading image info for {file_path}: {e}")
+        return None, None, None
 
 def scan_images(base_dir, conn):
     base_path = Path(base_dir)
@@ -36,12 +52,13 @@ def scan_images(base_dir, conn):
             stat = file_path.stat()
             created_at = datetime.fromtimestamp(stat.st_ctime).isoformat()
             modified_at = datetime.fromtimestamp(stat.st_mtime).isoformat()
+            filesize, width, height = get_image_info(file_path)
             
             try:
                 c.execute("""
-                    INSERT OR IGNORE INTO images (path, filename, created_at, modified_at)
-                    VALUES (?, ?, ?, ?)
-                """, (rel_path, file_path.name, created_at, modified_at))
+                    INSERT OR IGNORE INTO images (path, filename, created_at, modified_at, filesize, width, height)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                """, (rel_path, file_path.name, created_at, modified_at, filesize, width, height))
             except Exception as e:
                 print(f"Error processing {file_path}: {e}")
     conn.commit()
