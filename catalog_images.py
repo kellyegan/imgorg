@@ -10,7 +10,7 @@ import hashlib
 IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.tiff'}
 
 # Database setup
-DB_PATH = 'image_metadata.db'
+DB_PATH = 'catalog.db'
 
 def init_db(conn):
     c = conn.cursor()
