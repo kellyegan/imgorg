@@ -88,6 +88,7 @@ def scan_images(base_dir, conn):
     for file_path in tqdm(base_path.rglob("*")):
         if file_path.suffix.lower() in IMAGE_EXTENSIONS and file_path.is_file():
             rel_path = str(file_path.relative_to(base_path))
+            abs_path = str(file_path.absolute())
             stat = file_path.stat()
             created_at = datetime.fromtimestamp(stat.st_ctime).isoformat()
             modified_at = datetime.fromtimestamp(stat.st_mtime).isoformat()
@@ -97,7 +98,7 @@ def scan_images(base_dir, conn):
                 c.execute("""
                     INSERT OR IGNORE INTO images (path, filename, created_at, modified_at, filesize, width, height, filetype, filehash)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, (rel_path, file_path.name, created_at, modified_at, filesize, width, height, filetype, filehash))
+                """, (abs_path, file_path.name, created_at, modified_at, filesize, width, height, filetype, filehash))
             except Exception as e:
                 print(f"Error processing {file_path}: {e}")
     conn.commit()

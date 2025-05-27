@@ -1,0 +1,17 @@
+# ui/main_screen.kv
+<MainScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: "Image Catalog"
+            size_hint_y: 0.1
+        ScrollView:
+            GridLayout:
+                id: image_grid
+                cols: 4
+                size_hint_y: None
+                height: self.minimum_height
+                row_default_height: 200
+                row_force_default: True
+                spacing: 10
+                padding: 10
