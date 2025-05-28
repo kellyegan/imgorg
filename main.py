@@ -6,6 +6,8 @@ from kivy.core.window import Window
 
 from catalog.db import get_all_images  # You must have this function in catalog/db.py
 from ui.widgets import ImageCard       # This needs to be defined as in Step 3
+from catalog.image_importer import scan_for_images
+
 
 # Load the Kivy layout for MainScreen
 Builder.load_file('ui/main_screen.kv')
@@ -34,7 +36,6 @@ class MainScreen(Screen):
         for img in images:
             card = ImageCard(img)
             self.ids.image_grid.add_widget(card)
-    
 
 
 class ImageCatalogApp(App):
@@ -45,8 +46,12 @@ class ImageCatalogApp(App):
         return sm
     
     def _on_drop_file(self, window, filepath, x, y):
-        print(f"File dropped: {filepath.decode('utf-8')}")
-        pass
+        path_string = filepath.decode('utf-8')
+        images = scan_for_images(path_string)
+        
+        print(len(images))
+        
+        print(f"File dropped: {type(filepath)} {filepath.decode('utf-8')}")
 
 
 if __name__ == '__main__':
