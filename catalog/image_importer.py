@@ -6,13 +6,13 @@ import hashlib
 
 IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.tiff'}
 
-def get_md5_hash(file_path, chunk_size=8192):
-    hash_md5 = hashlib.md5()
+def calculate_file_hash(file_path, chunk_size=8192):
+    hasher = hashlib.md5()
     try:
         with open(file_path, "rb") as f:
             for chunk in iter(lambda: f.read(chunk_size), b""):
-                hash_md5.update(chunk)
-        return hash_md5.hexdigest()
+                hasher.update(chunk)
+        return hasher.hexdigest()
     except Exception as e:
         print(f"Error hashing {file_path}: {e}")
         return None
@@ -46,7 +46,7 @@ def get_image_details(file_path):
             results['height'] = height
             results['filetype'] = img.format
 
-        results['filehash'] = get_md5_hash(file_path)
+        results['filehash'] = calculate_file_hash(file_path)
     except Exception as e:
         print(f"Error reading image details for {file_path}: {e}")
         return None
@@ -57,7 +57,6 @@ def scan_for_images(path):
     if os.path.isdir(path):
         return scan_dir_for_images(path)
     elif os.path.isfile(path):
-        print("This is a file.")
         details = get_image_details(path)
         if details:
             return [details]

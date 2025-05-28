@@ -40,6 +40,13 @@ def get_all_images():
 
 def add_image(connection, img_details):
     cur = connection.cursor()
+
+    # Skip adding duplicate image paths
+    cur.execute("SELECT * FROM images WHERE path = ?", (img_details['path'],))
+    if cur.fetchone():
+        print("This is a duplicate image path.")
+        return    
+
     try:
         cur.execute("""
             INSERT OR IGNORE INTO images (path, filename, created_at, modified_at, filesize, width, height, filetype, filehash)

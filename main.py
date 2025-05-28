@@ -9,7 +9,6 @@ from ui.widgets import ImageCard       # This needs to be defined as in Step 3
 from catalog.image_importer import scan_for_images
 
 
-
 # Load the Kivy layout for MainScreen
 Builder.load_file('ui/main_screen.kv')
 
