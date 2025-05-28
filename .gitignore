@@ -1,3 +1,4 @@
 *.db
 .thumbnails/
 *.pyc
+.DS_Store
