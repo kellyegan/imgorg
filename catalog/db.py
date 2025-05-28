@@ -38,14 +38,22 @@ def get_all_images():
         rows = cur.fetchall()
         return [dict(row) for row in rows]
 
-def add_image(connection, img_details):
+def add_image(connection, img_details, ignore_duplicate = False):
     cur = connection.cursor()
 
     # Skip adding duplicate image paths
     cur.execute("SELECT * FROM images WHERE path = ?", (img_details['path'],))
     if cur.fetchone():
         print("This is a duplicate image path.")
-        return    
+        return  # Silently skip this image
+    
+    # Check if the file exists under a different path
+    cur.execute("SELECT * FROM images WHERE filehash = ?", (img_details['filehash'],))
+    existing_image = cur.fetchone()
+    if existing_image and not ignore_duplicate:
+        print(f"{img_details['path']} already exists under at {existing_image[1]}. Skipping...")
+        # prompt_for_duplicates(new_path, existing_image)
+        return
 
     try:
         cur.execute("""
