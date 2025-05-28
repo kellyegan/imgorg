@@ -15,7 +15,7 @@ DB_PATH = 'catalog.db'
 def init_db(conn):
     c = conn.cursor()
     c.execute("""
-        CREATE TABLE images (
+        CREATE TABLE IF NOT EXISTS images (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             path TEXT UNIQUE,
             filename TEXT,
