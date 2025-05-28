@@ -2,14 +2,33 @@
 <MainScreen>:
     BoxLayout:
         orientation: 'vertical'
-        ScrollView:
-            GridLayout:
-                id: image_grid
-                cols: 4
-                size_hint_y: None
-                height: self.minimum_height
-                row_default_height: 200
-                row_force_default: True
-                spacing: 10
-                padding: 10
+        BoxLayout:
+            id: content_area
+            orientation: 'vertical'
+
+            Label:
+                id: no_images_label
+                text: "Drop images or folders to add to the catalog."
+                font_size: '20sp'
+                color: (0.7, 0.7, 0.7, 1)
+                halign: 'center'
+                valign: 'middle'
+                size_hint: (1, 1)
+                text_size: self.size
+                opacity: 0  # Hidden by default
+        
+            ScrollView:
+                id: scroll_area
+                do_scroll_x: False
+                do_scroll_y: True
+
+                GridLayout:
+                    id: image_grid
+                    cols: 4
+                    size_hint_y: None
+                    height: self.minimum_height
+                    row_default_height: 200
+                    row_force_default: True
+                    spacing: 10
+                    padding: 10
             

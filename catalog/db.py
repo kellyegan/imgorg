@@ -37,3 +37,4 @@ def get_all_images():
         cur.execute("SELECT * FROM images ORDER BY filename")
         rows = cur.fetchall()
         return [dict(row) for row in rows]
+
