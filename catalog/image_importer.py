@@ -19,6 +19,8 @@ def get_md5_hash(file_path, chunk_size=8192):
     
 def get_image_details(file_path):
     results = {
+        'filename': None,
+        'path': None,
         'filesize': None,
         'created_at': None,
         'modified_at': None,
@@ -28,7 +30,10 @@ def get_image_details(file_path):
         'filehash': None,
     }
     try:
-        # Get file size in bytes
+        path = Path(file_path)
+        results['filename'] = path.name
+        results['path'] = str(path.absolute())
+
         stat = os.stat(file_path)
         results['filesize'] = stat.st_size
         results['created_at'] = datetime.fromtimestamp(stat.st_ctime).isoformat()
@@ -52,6 +57,7 @@ def scan_for_images(path):
     if os.path.isdir(path):
         return scan_dir_for_images(path)
     elif os.path.isfile(path):
+        print("This is a file.")
         details = get_image_details(path)
         if details:
             return [details]

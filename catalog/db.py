@@ -38,3 +38,20 @@ def get_all_images():
         rows = cur.fetchall()
         return [dict(row) for row in rows]
 
+def add_image(connection, img_details):
+    cur = connection.cursor()
+    try:
+        cur.execute("""
+            INSERT OR IGNORE INTO images (path, filename, created_at, modified_at, filesize, width, height, filetype, filehash)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (img_details['path'], img_details['filename'], img_details['created_at'], img_details['modified_at'],
+            img_details['filesize'], img_details['width'], img_details['height'], img_details['filetype'], img_details['filehash']))
+    except Exception as e:
+        print(f"Error processing {img_details['path']}: {e}")
+
+    connection.commit()
+
+def add_image_list(img_details_list):
+    with get_connection(DB_NAME) as conn:
+        for img_details in img_details_list:
+            add_image(conn, img_details)

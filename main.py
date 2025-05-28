@@ -4,9 +4,10 @@ from kivy.lang import Builder
 
 from kivy.core.window import Window
 
-from catalog.db import get_all_images  # You must have this function in catalog/db.py
+from catalog.db import get_all_images, add_image_list  # You must have this function in catalog/db.py
 from ui.widgets import ImageCard       # This needs to be defined as in Step 3
 from catalog.image_importer import scan_for_images
+
 
 
 # Load the Kivy layout for MainScreen
@@ -40,18 +41,19 @@ class MainScreen(Screen):
 
 class ImageCatalogApp(App):
     def build(self):
-        sm = ScreenManager()
-        sm.add_widget(MainScreen(name='main'))
+        self.sm = ScreenManager()
+        self.sm.add_widget(MainScreen(name='main'))
         Window.bind(on_drop_file=self._on_drop_file)
-        return sm
+        return self.sm
     
     def _on_drop_file(self, window, filepath, x, y):
         path_string = filepath.decode('utf-8')
         images = scan_for_images(path_string)
+
+        add_image_list(images)
         
-        print(len(images))
-        
-        print(f"File dropped: {type(filepath)} {filepath.decode('utf-8')}")
+        if 'main' in self.sm.screen_names:
+            self.sm.get_screen('main').on_pre_enter()
 
 
 if __name__ == '__main__':
