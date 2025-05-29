@@ -3,6 +3,7 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.lang import Builder
 
 from kivy.core.window import Window
+from kivy.metrics import dp
 
 from catalog.db import get_all_images, add_image_list, check_catalog_duplicate  # You must have this function in catalog/db.py
 from ui.widgets import ImageCard       # This needs to be defined as in Step 3
@@ -14,6 +15,25 @@ Builder.load_file('ui/main_screen.kv')
 
 
 class MainScreen(Screen):
+    cols = 1
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        Window.bind(size=self.update_cols)
+        self.update_cols()
+
+    def update_cols(self, *args):
+        # Thumbnail width + spacing
+        thumb_width = dp(200)
+        spacing = dp(10)  # padding + spacing between items
+        available_width = Window.width - spacing
+        new_cols = max(1, int(available_width // thumb_width))
+        self.cols = new_cols
+
+        # Update the grid layout if it exists
+        if hasattr(self.ids, "image_grid"):
+            self.ids.image_grid.cols = self.cols
+
     def on_pre_enter(self):
         self.ids.image_grid.clear_widgets()
         images = get_all_images()
