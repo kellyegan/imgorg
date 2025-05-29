@@ -8,7 +8,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 
-from catalog.db import get_all_images, add_image_list, check_image_conflicts  # You must have this function in catalog/db.py
+from catalog.db import get_all_images, add_image_list, check_catalog_duplicate  # You must have this function in catalog/db.py
 from ui.widgets import ImageCard       # This needs to be defined as in Step 3
 from catalog.image_importer import scan_for_images
 
@@ -51,14 +51,11 @@ class ImageCatalogApp(App):
     
     def _on_drop_file(self, window, filepath, x, y):
         path_string = filepath.decode('utf-8')
-        images = scan_for_images(path_string)
+        images, import_duplicates = scan_for_images(path_string)
 
-        results = check_image_conflicts(images)
+        imports, catalog_duplicates = check_catalog_duplicate(images)
 
-        add_image_list(results["pass"])
-
-        for conflict in results["conflicts"]:
-            print( f"{conflict[0]} conflicts with {conflict[1]}")
+        add_image_list(imports)
         
         if 'main' in self.sm.screen_names:
             self.sm.get_screen('main').on_pre_enter()

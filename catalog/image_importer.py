@@ -6,6 +6,7 @@ import hashlib
 
 IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.tiff'}
 
+
 def calculate_file_hash(file_path, chunk_size=8192):
     hasher = hashlib.md5()
     try:
@@ -16,7 +17,8 @@ def calculate_file_hash(file_path, chunk_size=8192):
     except Exception as e:
         print(f"Error hashing {file_path}: {e}")
         return None
-    
+
+
 def get_image_details(file_path):
     results = {
         'filename': None,
@@ -52,15 +54,17 @@ def get_image_details(file_path):
         return None
     
     return results
-    
+
+
 def scan_for_images(path):
     if os.path.isdir(path):
         return scan_dir_for_images(path)
     elif os.path.isfile(path):
         details = get_image_details(path)
         if details:
-            return [details]
-    return []
+            return [details] , []
+    return [], []
+
 
 def scan_dir_for_images(base_dir):
     base_path = Path(base_dir)
@@ -71,5 +75,15 @@ def scan_dir_for_images(base_dir):
             image_details = get_image_details(filepath)
             if image_details:
                 images.append(image_details)
+
+    images = []
+    duplicates = []
+
+    for i, img in enumerate(images):
+        for j in range(i + 1, len(images)):
+            if images[i]['filehash'] == images[j]['filehash']:
+                duplicates.append((images[i], images[j]))
+            else:
+                images.append(img)
            
-    return images
+    return images, duplicates

@@ -38,29 +38,31 @@ def get_all_images():
         rows = cur.fetchall()
         return [dict(row) for row in rows]
     
-def check_image_conflict(connection, image_details):
+def is_duplicate(connection, image_details):
     cur = connection.cursor()
     cur.execute("SELECT * FROM images WHERE filehash = ?", (image_details['filehash'],))
     existing_image = cur.fetchone()
+    print(existing_image["path"])
     if existing_image:
-        return (image_details, existing_image[0])
+        return (image_details, existing_image)
     else:
         return None
     
-def check_image_conflicts(image_details_list):
-    results = {
-        "pass" : [],
-        "conflicts" : []
-    }
+def check_catalog_duplicate(image_details_list):
+    images = []
+    duplicates = []
 
     with get_connection(DB_NAME) as conn:
+        conn.row_factory = sqlite3.Row
         for image_details in image_details_list:
-            conflict = check_image_conflict(conn, image_details)
+            conflict = is_duplicate(conn, image_details)
             if conflict:
-                results["conflicts"].append(conflict)
+                # If it is same image just ignore it
+                if image_details["path"] != conflict["path"]:
+                    duplicates.append(conflict)
             else:
-                results["pass"].append(image_details)
-        return results
+               images.append(image_details)
+        return images, duplicates
 
 def add_image(connection, img_details, ignore_duplicate = False):
     cur = connection.cursor()
@@ -70,14 +72,6 @@ def add_image(connection, img_details, ignore_duplicate = False):
     if cur.fetchone():
         print("This is a duplicate image path.")
         return  # Silently skip this image
-    
-    # Check if the file exists under a different path
-    cur.execute("SELECT * FROM images WHERE filehash = ?", (img_details['filehash'],))
-    existing_image = cur.fetchone()
-    if existing_image and not ignore_duplicate:
-        print(f"{img_details['path']} already exists under at {existing_image[1]}. Skipping...")
-        # prompt_for_duplicates(new_path, existing_image)
-        return
 
     try:
         cur.execute("""
