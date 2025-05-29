@@ -42,7 +42,7 @@ def is_duplicate(connection, image_details):
     cur = connection.cursor()
     cur.execute("SELECT * FROM images WHERE filehash = ?", (image_details['filehash'],))
     existing_image = cur.fetchone()
-    print(existing_image["path"])
+
     if existing_image:
         return (image_details, existing_image)
     else:

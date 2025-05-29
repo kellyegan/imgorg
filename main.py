@@ -48,7 +48,6 @@ class ImageCatalogApp(App):
     def _on_drop_file(self, window, filepath, x, y):
         path_string = filepath.decode('utf-8')
         images, import_duplicates = scan_for_images(path_string)
-
         imports, catalog_duplicates = check_catalog_duplicate(images)
 
         add_image_list(imports)

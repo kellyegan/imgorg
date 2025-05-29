@@ -69,21 +69,17 @@ def scan_for_images(path):
 def scan_dir_for_images(base_dir):
     base_path = Path(base_dir)
     images = []
+    duplicates = []
+    hashes = set()
     
-    for filepath in base_path.rglob("*"):
+    for filepath in sorted(base_path.rglob("*"), key=lambda x: (len(str(x)), str(x).lower())):
         if filepath.suffix.lower() in IMAGE_EXTENSIONS and filepath.is_file():
             image_details = get_image_details(filepath)
             if image_details:
-                images.append(image_details)
-
-    images = []
-    duplicates = []
-
-    for i, img in enumerate(images):
-        for j in range(i + 1, len(images)):
-            if images[i]['filehash'] == images[j]['filehash']:
-                duplicates.append((images[i], images[j]))
-            else:
-                images.append(img)
+                if image_details['filehash'] not in hashes:
+                    hashes.add(image_details['filehash'])
+                    images.append(image_details)
+                else:
+                    duplicates.append(image_details)
            
     return images, duplicates
