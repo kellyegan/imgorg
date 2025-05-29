@@ -58,7 +58,7 @@ def check_catalog_duplicate(image_details_list):
             conflict = is_duplicate(conn, image_details)
             if conflict:
                 # If it is same image just ignore it
-                if image_details["path"] != conflict["path"]:
+                if image_details["path"] != conflict[1]["path"]:
                     duplicates.append(conflict)
             else:
                images.append(image_details)
