@@ -8,7 +8,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 
-from catalog.db import get_all_images, add_image_list  # You must have this function in catalog/db.py
+from catalog.db import get_all_images, add_image_list, check_image_conflicts  # You must have this function in catalog/db.py
 from ui.widgets import ImageCard       # This needs to be defined as in Step 3
 from catalog.image_importer import scan_for_images
 
@@ -53,7 +53,12 @@ class ImageCatalogApp(App):
         path_string = filepath.decode('utf-8')
         images = scan_for_images(path_string)
 
-        add_image_list(images)
+        results = check_image_conflicts(images)
+
+        add_image_list(results["pass"])
+
+        for conflict in results["conflicts"]:
+            print( f"{conflict[0]} conflicts with {conflict[1]}")
         
         if 'main' in self.sm.screen_names:
             self.sm.get_screen('main').on_pre_enter()

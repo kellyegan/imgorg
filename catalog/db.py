@@ -37,6 +37,30 @@ def get_all_images():
         cur.execute("SELECT * FROM images ORDER BY filename")
         rows = cur.fetchall()
         return [dict(row) for row in rows]
+    
+def check_image_conflict(connection, image_details):
+    cur = connection.cursor()
+    cur.execute("SELECT * FROM images WHERE filehash = ?", (image_details['filehash'],))
+    existing_image = cur.fetchone()
+    if existing_image:
+        return (image_details, existing_image[0])
+    else:
+        return None
+    
+def check_image_conflicts(image_details_list):
+    results = {
+        "pass" : [],
+        "conflicts" : []
+    }
+
+    with get_connection(DB_NAME) as conn:
+        for image_details in image_details_list:
+            conflict = check_image_conflict(conn, image_details)
+            if conflict:
+                results["conflicts"].append(conflict)
+            else:
+                results["pass"].append(image_details)
+        return results
 
 def add_image(connection, img_details, ignore_duplicate = False):
     cur = connection.cursor()
