@@ -2,7 +2,8 @@ from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.core.window import Window
 from kivy.lang import Builder
-from kivy.properties import ListProperty, NumericProperty
+from kivy.uix.image import Image
+from kivy.properties import ListProperty, NumericProperty, ObjectProperty
 
 from ui.widgets import ImageCard
 
@@ -13,7 +14,7 @@ Builder.load_file("ui/imgorg.kv")
 
 class ImgOrgApp(App):
     image_list = ListProperty([])
-    current_index = NumericProperty(-1)
+    current_index = NumericProperty(1)
 
     def build(self):
         self.sm = ScreenManager()
@@ -21,11 +22,17 @@ class ImgOrgApp(App):
         self.sm.add_widget(ImagePreviewScreen())
 
         Window.bind(on_drop_file=self._on_drop_file)
-        
+
         self.image_list = get_all_images()
-        print(f"In app image list length: {len(self.image_list)}")
+        self.current_index = 0
 
         return self.sm
+    
+    def set_index(self, index):
+        if 0 <= index < len(self.image_list):
+            self.current_index = index
+            self.sm.transition.direction = 'up'
+            self.sm.current = "preview"
     
     def _on_drop_file(self, window, filepath, x, y):
         path_string = filepath.decode('utf-8')
@@ -33,12 +40,33 @@ class ImgOrgApp(App):
         imports, catalog_duplicates = check_catalog_duplicate(images)
 
         add_image_list(imports)
-        
+
         self.image_list = get_all_images()
         
+        
 class ImagePreviewScreen(Screen):
-    pass       
+    current_image = ObjectProperty(None)
 
+    def on_pre_enter(self):
+        app = App.get_running_app()
+        app.bind(current_index=self.on_current_index_change)
+        self.on_current_index_change(app, app.current_index)
+        
+
+    def on_current_index_change(self, instance, value):
+        if not isinstance(value, int):
+            return
+        
+        if value < 0 or value >= len(instance.image_list):
+            print("Index out of bounds")
+            return
+        
+        self.current_image = instance.image_list[value]
+
+        image_widget = Image(source=self.current_image["path"], allow_stretch=True, keep_ratio=True)
+        self.add_widget(image_widget)
+        
+        
 class ThumbnailBrowserScreen(Screen):
     columns = 1
     thumbnail_width = 200
@@ -74,8 +102,8 @@ class ThumbnailBrowserScreen(Screen):
 
         if len(images) > 0:
             self.show_image_grid(True)
-            for img in images:
-                card = ImageCard(img)
+            for i, img in enumerate(images):
+                card = ImageCard(img, i)
                 self.ids["thumbnail_grid"].add_widget(card)
         else:
             self.show_image_grid(False)
