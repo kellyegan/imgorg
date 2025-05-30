@@ -16,7 +16,24 @@ class ImgOrgApp(App):
 
 class ThumbnailBrowserScreen(Screen):
     columns = 1
-    
+    thumbnail_width = 200
+
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        Window.bind(size=self.update_column_size)
+        self.update_column_size()
+
+    def update_column_size(self, *args):
+        """
+        Update the number of columns based on available width.
+        """
+        Window.bind(on_resize=self.update_column_size)
+        border_spacing = 10
+        available_width = Window.width - border_spacing
+        self.columns = max(1, int(available_width / self.thumbnail_width))
+        
+        self.ids["thumbnail_grid"].cols = self.columns
+
     def show_image_grid(self, count):
         """
         Show the image grid when there are more than 0 images
