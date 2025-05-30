@@ -3,6 +3,7 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.config import Config
+from kivy.clock import Clock
 
 from kivy.uix.image import Image
 from kivy.properties import ListProperty, NumericProperty, ObjectProperty
@@ -101,6 +102,30 @@ class ThumbnailBrowserScreen(Screen):
         app = App.get_running_app()
         app.bind(image_list=self.on_image_list_change)
         self.on_image_list_change(app, app.image_list)
+
+        Clock.schedule_once(self._wait_for_layout_ready, 0.1)
+
+    def _wait_for_layout_ready(self, dt):
+        if self.ids.thumbnail_grid.height == 0:
+            Clock.schedule_once(self._wait_for_layout_ready, 0.05)
+        else:
+            Clock.schedule_once(self.scroll_to_current_thumb, 0.0)
+
+    def scroll_to_current_thumb(self, dt):
+        app = App.get_running_app()
+        index = app.current_index
+
+        grid = self.ids.thumbnail_grid
+        scrollview = self.ids.scroll_area
+
+        if grid.height <= scrollview.height:
+            return
+
+        try:
+            target_widget = grid.children[::-1][index]
+            scrollview.scroll_to(target_widget, padding=10)
+        except IndexError:
+            pass
 
     def on_image_list_change(self, instance, value):
         image_list = value
