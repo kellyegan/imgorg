@@ -7,7 +7,7 @@ from kivy.properties import ListProperty, NumericProperty
 from ui.widgets import ImageCard
 
 from catalog.db import get_all_images, add_image_list, check_catalog_duplicate  # You must have this function in catalog/db.py
-
+from catalog.image_importer import scan_for_images
 
 Builder.load_file("ui/imgorg.kv")
 
@@ -29,6 +29,12 @@ class ImgOrgApp(App):
     
     def _on_drop_file(self, window, filepath, x, y):
         path_string = filepath.decode('utf-8')
+        images, import_duplicates = scan_for_images(path_string)
+        imports, catalog_duplicates = check_catalog_duplicate(images)
+
+        add_image_list(imports)
+        
+        self.image_list = get_all_images()
         
 class ImagePreviewScreen(Screen):
     pass       
@@ -50,7 +56,18 @@ class ThumbnailBrowserScreen(Screen):
     def on_image_list_change(self, instance, value):
         image_list = value
         self.load_image_grid(image_list)
+
+    def update_column_size(self, *args):
+        """
+        Update the number of columns based on available width.
+        """
+        Window.bind(on_resize=self.update_column_size)
+        border_spacing = 10
+        available_width = Window.width - border_spacing
+        self.columns = max(1, int(available_width / self.thumbnail_width))
         
+        self.ids["thumbnail_grid"].cols = self.columns
+       
     def load_image_grid(self, images):
         # Clear existing widgets in the grid layout
         self.ids["thumbnail_grid"].clear_widgets()
@@ -63,21 +80,9 @@ class ThumbnailBrowserScreen(Screen):
         else:
             self.show_image_grid(False)
 
-    def update_column_size(self, *args):
-        """
-        Update the number of columns based on available width.
-        """
-        Window.bind(on_resize=self.update_column_size)
-        border_spacing = 10
-        available_width = Window.width - border_spacing
-        self.columns = max(1, int(available_width / self.thumbnail_width))
-        
-        self.ids["thumbnail_grid"].cols = self.columns
-
     def show_image_grid(self, show_grid):
         """
-        Show the image grid when there are more than 0 images
-        otherwise show a labels explaining how to add images
+        Show the image grid
         """
         hide_id = "images_empty_label" if show_grid else "scroll_area"
         show_id = "scroll_area" if show_grid else "images_empty_label"
