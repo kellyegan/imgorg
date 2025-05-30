@@ -1,0 +1,62 @@
+<ThumbnailBrowserScreen>:
+    name: 'browser'
+    BoxLayout:
+        orientation: 'vertical'
+
+        Label:
+            id: images_empty_label
+            text: "Drop images or directory to add to the catalog."
+            font_size: '20sp'
+            color: (0.7, 0.7, 0.7, 1)
+            halign: 'center'
+            valign: 'middle'
+            text_size: self.size
+            opacity: 1
+            height: 100
+            size_hint_y: 1
+
+        ScrollView:
+            id: scroll_area
+            do_scroll_x: False
+            do_scroll_y: True
+            opacity: 0
+            height: 0
+            size_hint_y: None
+
+            GridLayout:
+                id: image_grid
+                cols: root.columns
+                size_hint_y: None
+                height: self.minimum_height
+                row_default_height: 200
+                row_force_default: True
+                spacing: 10
+                padding: 10
+
+                Label:
+                    text: "image 1"
+                Label:
+                    text: "image 2"
+                Label:
+                    text: "image 3"
+                Label:
+                    text: "image 4"
+                Label:
+                    text: "image 5"
+                Label:
+                    text: "image 6"
+                Label:
+                    text: "image 7"
+                Label:
+                    text: "image 8"
+                Label:
+                    text: "image 9"
+                Label:
+                    text: "image 10"
+                Label:
+                    text: "image 11"
+                Label:
+                    text: "image 12"
+
+<ImagePreviewScreen>:
+    name: 'screen'
