@@ -9,7 +9,7 @@ from kivy.metrics import dp
 from kivy.uix.image import Image
 from kivy.properties import ListProperty, NumericProperty, ObjectProperty
 
-from ui.widgets import ImageCard
+from ui.imagecard import ImageCard
 
 from catalog.db import get_all_images, add_image_list, check_catalog_duplicate  # You must have this function in catalog/db.py
 from catalog.image_importer import scan_for_images

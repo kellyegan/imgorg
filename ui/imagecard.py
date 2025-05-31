@@ -1,9 +1,12 @@
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import Image
-from kivy.uix.label import Label
 from kivy.uix.behaviors import ButtonBehavior
+from kivy.properties import DictProperty, ObjectProperty, StringProperty
 from kivy.metrics import dp
+
+from kivy.lang import Builder
+Builder.load_file("ui/imagecard.kv")
 
 from catalog.thumbnail import ensure_thumbnail
 
@@ -12,27 +15,21 @@ class ClickableImage(ButtonBehavior, Image):
     pass
 
 class ImageCard(BoxLayout):
+    image_data = DictProperty()
+    on_click = ObjectProperty(None)
+    thumb_source = StringProperty()
 
-    def __init__(self, image_data, index=None, **kwargs):
-        super().__init__(orientation='vertical', size_hint_y=None, height=dp(200), **kwargs)
+    def __init__(self, image_data, index=None, on_click=None, **kwargs):
+        super().__init__(**kwargs)
         self.image_data = image_data
         self.index = index
+        self.on_click = on_click
 
         thumb_path = ensure_thumbnail(image_data['path'])
-        if thumb_path is None:
-            return  # skip broken image
+        if thumb_path is not None:
+            self.thumb_source = thumb_path
 
-        img_widget = ClickableImage(source=thumb_path, allow_stretch=True, keep_ratio=True)
-        img_widget.bind(on_release=self._on_image_click)
-
-
-        self.add_widget(img_widget)
-
-    def _on_image_click(self, instance, *args):
-        
-        
-        print(self.image_data['path'])
+    def _on_image_click(self, *args):
         if self.index is not None:
-            print(self.index)
             app = App.get_running_app()
             app.set_index(self.index)
