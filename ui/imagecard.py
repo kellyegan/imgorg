@@ -2,7 +2,7 @@ from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import Image
 from kivy.uix.behaviors import ButtonBehavior
-from kivy.properties import DictProperty, ObjectProperty, StringProperty
+from kivy.properties import DictProperty, ObjectProperty, StringProperty, BooleanProperty
 from kivy.metrics import dp
 
 from kivy.lang import Builder
@@ -18,12 +18,16 @@ class ImageCard(BoxLayout):
     image_data = DictProperty()
     on_click = ObjectProperty(None)
     thumb_source = StringProperty()
+    is_active = BooleanProperty(False)
+    is_selected = BooleanProperty(False)
 
-    def __init__(self, image_data, index=None, on_click=None, **kwargs):
+    def __init__(self, image_data, index=None, is_active=False, is_selected=False, on_click=None, **kwargs):
         super().__init__(**kwargs)
         self.image_data = image_data
         self.index = index
         self.on_click = on_click
+        self.is_active = is_active
+        self.is_selected = is_selected
 
         thumb_path = ensure_thumbnail(image_data['path'])
         if thumb_path is not None:

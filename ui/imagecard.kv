@@ -1,9 +1,22 @@
 <ClickableImage@ButtonBehavior+Image>:
 
 <ImageCard>:
+    canvas.before:
+        Color:
+            rgba: (1, 1, 1, .2) if self.is_selected else (0, 0, 0, 0)
+        Rectangle:
+            pos: (self.pos[0] + 2, self.pos[1] + 2)
+            size: (self.size[0] - 4, self.size[1] - 4)
+        Color:
+            rgba: (0.6, 0.75, 0.75, 1) if self.is_active else (0, 0, 0, 0)
+        Line:
+            width: 2.
+            rectangle: (self.x, self.y, self.width, self.height)
+
     orientation: 'vertical'
     size_hint_y: None
-    height: dp(200)
+    height: dp(220)
+    padding: dp(20)
 
     ClickableImage:
         source: root.thumb_source
