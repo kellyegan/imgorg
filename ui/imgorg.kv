@@ -28,10 +28,10 @@
                 cols: root.columns
                 size_hint_y: None
                 height: self.minimum_height
-                row_default_height: 200
+                row_default_height: dp(200)
                 row_force_default: True
-                spacing: 15
-                padding: 15
+                spacing: dp(40)
+                padding: dp(40)
 
 
 <ImagePreviewScreen>:
@@ -40,5 +40,5 @@
     BoxLayout:
         id: preview_box
         orientation: 'vertical'
-        spacing: 15
-        padding: 15
+        spacing: dp(25)
+        padding: dp(50)

@@ -4,6 +4,7 @@ from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.config import Config
 from kivy.clock import Clock
+from kivy.metrics import dp
 
 from kivy.uix.image import Image
 from kivy.properties import ListProperty, NumericProperty, ObjectProperty
@@ -26,6 +27,7 @@ class ImgOrgApp(App):
         self.sm.add_widget(ImagePreviewScreen())
 
         Window.bind(on_drop_file=self._on_drop_file)
+        Window.size = (1024, 1024)
 
         self.image_list = get_all_images()
         self.current_index = 0
@@ -91,7 +93,7 @@ class ImagePreviewScreen(Screen):
 
 class ThumbnailBrowserScreen(Screen):
     columns = 1
-    thumbnail_width = 200
+    thumbnail_width = dp(200)
 
     def __init__(self, **kw):
         super().__init__(**kw)
@@ -136,7 +138,7 @@ class ThumbnailBrowserScreen(Screen):
         Update the number of columns based on available width.
         """
         Window.bind(on_resize=self.update_column_size)
-        border_spacing = 10
+        border_spacing = dp(50)
         available_width = Window.width - border_spacing
         self.columns = max(1, int(available_width / self.thumbnail_width))
         
