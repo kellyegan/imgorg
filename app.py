@@ -31,11 +31,15 @@ class ImgOrgApp(App):
 
         return self.sm
     
-    def set_index(self, index):
+    def preview_image_at_index(self, index):
+        self.set_active(index)
+        self.sm.transition.direction = 'up'
+        self.sm.current = "preview"
+
+
+    def set_active(self, index):
         if 0 <= index < len(self.image_list):
             self.active_index = index
-            self.sm.transition.direction = 'up'
-            self.sm.current = "preview"
 
     def add_images_from_path(self, filepath):
         images, import_duplicates = scan_for_images(filepath)
@@ -47,16 +51,16 @@ class ImgOrgApp(App):
 class ImagePreviewScreen(Screen):
     def __init__(self, **kw):
         super().__init__(**kw)
-        Window.bind(on_key_down=self.on_key_down)
+        Window.bind(on_key_down=self._on_key_down)
+        app = App.get_running_app()
+        app.bind(active_index=self._on_active_index_change)
 
     def on_pre_enter(self):
         app = App.get_running_app()
         self.ids["preview_box"].clear_widgets()
-        app.bind(active_index=self.on_active_index_change)
-        self.on_active_index_change(app, app.active_index)
+        self._on_active_index_change(app, app.active_index)
         
-        
-    def on_active_index_change(self, instance, value):
+    def _on_active_index_change(self, instance, value):
         if not isinstance(value, int):
             return
         
@@ -70,20 +74,22 @@ class ImagePreviewScreen(Screen):
         image_widget = Image(source=self.current_image["path"], allow_stretch=True, keep_ratio=True)    
         self.ids.preview_box.add_widget(image_widget)
 
-    def on_key_down(self, window, key, scancode, codepoint, modifier):
+    def _on_key_down(self, window, key, scancode, codepoint, modifier):
         if self.manager.current != "preview":
             return
+        
         app = App.get_running_app()
+        num_images = len(app.image_list)
 
         if key == 27:  # Escape key
             self.manager.transition.direction = 'down'
             self.manager.current = "browser"
         elif key == 276:  # Left arrow key
-            new_index = (app.active_index - 1) % len(app.image_list)
-            app.set_index(new_index)
+            new_index = (app.active_index - 1) % num_images
+            app.set_active(new_index)
         elif key == 275:  # Right arrow key
-            new_index = (app.active_index + 1) % len(app.image_list)
-            app.set_index(new_index)
+            new_index = (app.active_index + 1) % num_images
+            app.set_active(new_index)
 
 class ThumbnailBrowserScreen(Screen):
     columns = 1
@@ -92,9 +98,13 @@ class ThumbnailBrowserScreen(Screen):
     def __init__(self, **kw):
         super().__init__(**kw)
         Window.bind(size=self.update_column_size)
-        self.update_column_size()
         Window.bind(on_drop_file=self._on_drop_file)
+        Window.bind(on_key_down=self._on_key_down)
+        app = App.get_running_app()
+        app.bind(active_index=self._on_active_index_change)
+
         Window.size = (1024, 1024)
+        self.update_column_size()
 
     def on_pre_enter(self):
         self.show_image_grid(1)
@@ -146,18 +156,18 @@ class ThumbnailBrowserScreen(Screen):
         available_width = Window.width - border_spacing
         self.columns = max(1, int(available_width / self.thumbnail_width))
         
-        self.ids["thumbnail_grid"].cols = self.columns
+        self.ids.thumbnail_grid.cols = self.columns
        
     def load_image_grid(self, images):
         # Clear existing widgets in the grid layout
-        self.ids["thumbnail_grid"].clear_widgets()
+        self.ids.thumbnail_grid.clear_widgets()
         app = App.get_running_app()
 
         if len(images) > 0:
             self.show_image_grid(True)
             for i, img in enumerate(images):
                 card = ImageCard(img, i, is_active = (i == app.active_index))
-                self.ids["thumbnail_grid"].add_widget(card)
+                self.ids.thumbnail_grid.add_widget(card)
         else:
             self.show_image_grid(False)
 
@@ -173,6 +183,36 @@ class ThumbnailBrowserScreen(Screen):
         self.ids[show_id].opacity = 1
         self.ids[show_id].height = 100
         self.ids[show_id].size_hint_y = 1
+
+    def _on_active_index_change(self, instance, value):
+        if not isinstance(value, int):
+            return
+        
+        if self.manager.current != "browser":
+            return        
+        
+        app = App.get_running_app()
+
+        for thumb in self.ids.thumbnail_grid.children:
+            if thumb.index == app.active_index:
+                thumb.set_active(True)
+            else:
+                thumb.set_active(False)
+
+    def _on_key_down(self, window, key, scancode, codepoint, modifier):
+        if self.manager.current != "browser":
+            return
+        
+        app = App.get_running_app()
+        num_images = len(app.image_list)
+
+        if key == 276:  # Left arrow key
+            new_index = min( num_images, max(0, app.active_index - 1))
+            app.set_active(new_index)
+        elif key == 275:  # Right arrow key
+            new_index = min( num_images, max(0, app.active_index + 1))
+            app.set_active(new_index)
+        
 
 if __name__ == "__main__":
     ImgOrgApp().run()

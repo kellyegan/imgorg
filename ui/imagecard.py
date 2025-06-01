@@ -2,7 +2,7 @@ from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import Image
 from kivy.uix.behaviors import ButtonBehavior
-from kivy.properties import DictProperty, ObjectProperty, StringProperty, BooleanProperty
+from kivy.properties import DictProperty, ObjectProperty, StringProperty, BooleanProperty, NumericProperty
 from kivy.metrics import dp
 
 from kivy.lang import Builder
@@ -16,6 +16,7 @@ class ClickableImage(ButtonBehavior, Image):
 
 class ImageCard(BoxLayout):
     image_data = DictProperty()
+    index = NumericProperty()
     on_click = ObjectProperty(None)
     thumb_source = StringProperty()
     is_active = BooleanProperty(False)
@@ -36,4 +37,11 @@ class ImageCard(BoxLayout):
     def _on_image_click(self, *args):
         if self.index is not None:
             app = App.get_running_app()
-            app.set_index(self.index)
+            app.preview_image_at_index(self.index)
+
+    def set_active(self, active):
+        self.is_active = active
+
+    def set_selected(self, selected):
+        self.is_selected = selected
+
