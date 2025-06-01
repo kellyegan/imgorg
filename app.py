@@ -36,9 +36,6 @@ class ImgOrgApp(App):
         self.sm.transition.direction = 'up'
         self.sm.current = "preview"
 
-    def view_thumbnail_browser(self, dt):
-        self.sm.transition.direction = 'down'
-        self.sm.current = "browser"        
 
     def set_active(self, index):
         if 0 <= index < len(self.image_list):
@@ -84,8 +81,9 @@ class ImagePreviewScreen(Screen):
         app = App.get_running_app()
         num_images = len(app.image_list)
 
-        if key in (27, 32):  # Escape key
-            Clock.schedule_once(app.view_thumbnail_browser, 0.05)
+        if key == 27:  # Escape key
+            self.manager.transition.direction = 'down'
+            self.manager.current = "browser"
         elif key == 276:  # Left arrow key
             new_index = (app.active_index - 1) % num_images
             app.set_active(new_index)
@@ -204,7 +202,7 @@ class ThumbnailBrowserScreen(Screen):
     def _on_key_down(self, window, key, scancode, codepoint, modifier):
         if self.manager.current != "browser":
             return
-        
+
         app = App.get_running_app()
         new_index = app.active_index
 
@@ -216,9 +214,6 @@ class ThumbnailBrowserScreen(Screen):
             new_index = app.active_index - self.columns     
         elif key == 274:  # Down arrow key
             new_index = app.active_index + self.columns
-        elif key == 32:  # Space bar
-            app.preview_image_at_index(app.active_index)
-            return
 
         if( new_index >= 0 and new_index < len(app.image_list)):
             app.set_active(new_index)
