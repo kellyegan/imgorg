@@ -1,11 +1,6 @@
 <ClickableImage@ButtonBehavior+Image>:
 
 <ImageCard>:
-    orientation: 'vertical'
-    size_hint_y: None
-    height: self.width
-    padding: dp(20)
-
     canvas.before:
         Color:
             rgba: (1, 1, 1, .2) if self.is_selected else (0, 0, 0, 0)
@@ -17,6 +12,11 @@
         Line:
             width: 2.
             rectangle: (self.x, self.y, self.width, self.height)
+
+    orientation: 'vertical'
+    size_hint_y: None
+    height: dp(220)
+    padding: dp(20)
 
     ClickableImage:
         source: root.thumb_source
