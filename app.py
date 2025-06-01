@@ -180,11 +180,7 @@ class ThumbnailBrowserScreen(Screen):
         hide_id = "images_empty_label" if show_grid else "scroll_area"
         show_id = "scroll_area" if show_grid else "images_empty_label"
         self.ids[hide_id].opacity = 0
-        self.ids[hide_id].height = 0
-        self.ids[hide_id].size_hint_y = None
         self.ids[show_id].opacity = 1
-        self.ids[show_id].height = 100
-        self.ids[show_id].size_hint_y = 1
 
     def _on_active_index_change(self, instance, value):
         if not isinstance(value, int):

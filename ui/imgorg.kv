@@ -1,35 +1,33 @@
 <ThumbnailBrowserScreen>:
     name: 'browser'
-    BoxLayout:
-        orientation: 'vertical'
-
+    FloatLayout:
         Label:
             id: images_empty_label
-            text: "Drop images or directory to add to the catalog."
-            font_size: '20sp'
+            text: "Drop images or directory here to add to the catalog."
+            font_size: '24sp'
             color: (0.7, 0.7, 0.7, 1)
+            pos: self.pos
+            height: 100
             halign: 'center'
             valign: 'middle'
             text_size: self.size
-            opacity: 1
+
+        BoxLayout:
+            pos: self.pos
+            size_hint: (1, 1)
             height: 100
-            size_hint_y: 1
+            ScrollView:
+                id: scroll_area
+                do_scroll_x: False
+                do_scroll_y: True
 
-        ScrollView:
-            id: scroll_area
-            do_scroll_x: False
-            do_scroll_y: True
-            opacity: 0
-            height: 0
-            size_hint_y: None
-
-            GridLayout:
-                id: thumbnail_grid
-                cols: root.columns
-                size_hint_y: None
-                height: self.minimum_height
-                spacing: dp(5)
-                padding: dp(40)
+                GridLayout:
+                    id: thumbnail_grid
+                    cols: root.columns
+                    size_hint_y: None
+                    height: self.minimum_height
+                    spacing: dp(5)
+                    padding: dp(40)
 
 
 <ImagePreviewScreen>:
