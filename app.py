@@ -26,9 +26,6 @@ class ImgOrgApp(App):
         self.sm.add_widget(ThumbnailBrowserScreen())
         self.sm.add_widget(ImagePreviewScreen())
 
-        Window.bind(on_drop_file=self._on_drop_file)
-        Window.size = (1024, 1024)
-
         self.image_list = get_all_images()
         self.active_index = 0
 
@@ -39,16 +36,13 @@ class ImgOrgApp(App):
             self.active_index = index
             self.sm.transition.direction = 'up'
             self.sm.current = "preview"
-    
-    def _on_drop_file(self, window, filepath, x, y):
-        path_string = filepath.decode('utf-8')
-        images, import_duplicates = scan_for_images(path_string)
+
+    def add_images_from_path(self, filepath):
+        images, import_duplicates = scan_for_images(filepath)
         imports, catalog_duplicates = check_catalog_duplicate(images)
-
         add_image_list(imports)
-
         self.image_list = get_all_images()
-        
+
         
 class ImagePreviewScreen(Screen):
     def __init__(self, **kw):
@@ -99,11 +93,16 @@ class ThumbnailBrowserScreen(Screen):
         super().__init__(**kw)
         Window.bind(size=self.update_column_size)
         self.update_column_size()
+        Window.bind(on_drop_file=self._on_drop_file)
+        Window.size = (1024, 1024)
+
+    def on_pre_enter(self):
+        self.show_image_grid(1)
 
     def on_enter(self):
         app = App.get_running_app()
-        app.bind(image_list=self.on_image_list_change)
-        self.on_image_list_change(app, app.image_list)
+        app.bind(image_list=self._on_image_list_change)
+        self._on_image_list_change(app, app.image_list)
 
         Clock.schedule_once(self._wait_for_layout_ready, 0.1)
 
@@ -112,6 +111,15 @@ class ThumbnailBrowserScreen(Screen):
             Clock.schedule_once(self._wait_for_layout_ready, 0.05)
         else:
             Clock.schedule_once(self.scroll_to_current_thumb, 0.0)
+
+    def _on_image_list_change(self, instance, value):
+        image_list = value
+        self.load_image_grid(image_list)
+
+    def _on_drop_file(self, window, filepath, x, y):
+        path_string = filepath.decode('utf-8')
+        app = App.get_running_app()
+        app.add_images_from_path(path_string)
 
     def scroll_to_current_thumb(self, dt):
         app = App.get_running_app()
@@ -128,10 +136,6 @@ class ThumbnailBrowserScreen(Screen):
             scrollview.scroll_to(target_widget, padding=10)
         except IndexError:
             pass
-
-    def on_image_list_change(self, instance, value):
-        image_list = value
-        self.load_image_grid(image_list)
 
     def update_column_size(self, *args):
         """
@@ -169,9 +173,6 @@ class ThumbnailBrowserScreen(Screen):
         self.ids[show_id].opacity = 1
         self.ids[show_id].height = 100
         self.ids[show_id].size_hint_y = 1
-    
-    def on_pre_enter(self):
-        self.show_image_grid(1)
 
 if __name__ == "__main__":
     ImgOrgApp().run()
