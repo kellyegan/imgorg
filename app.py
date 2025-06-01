@@ -202,17 +202,24 @@ class ThumbnailBrowserScreen(Screen):
     def _on_key_down(self, window, key, scancode, codepoint, modifier):
         if self.manager.current != "browser":
             return
-        
+
         app = App.get_running_app()
-        num_images = len(app.image_list)
+        new_index = app.active_index
 
         if key == 276:  # Left arrow key
-            new_index = min( num_images, max(0, app.active_index - 1))
-            app.set_active(new_index)
+            new_index = app.active_index - 1
         elif key == 275:  # Right arrow key
-            new_index = min( num_images, max(0, app.active_index + 1))
+            new_index = app.active_index + 1
+        elif key == 273:  # Up arrow key
+            new_index = app.active_index - self.columns     
+        elif key == 274:  # Down arrow key
+            new_index = app.active_index + self.columns
+
+        if( new_index >= 0 and new_index < len(app.image_list)):
             app.set_active(new_index)
-        
+
+        self.scroll_to_current_thumb(None)
+
 
 if __name__ == "__main__":
     ImgOrgApp().run()
