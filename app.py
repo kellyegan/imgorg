@@ -108,9 +108,6 @@ class ThumbnailBrowserScreen(Screen):
         Window.size = (1024, 1024)
         self.update_column_size()
 
-    def on_pre_enter(self):
-        self.show_image_grid(1)
-
     def on_enter(self):
         app = App.get_running_app()
         app.bind(image_list=self._on_image_list_change)
@@ -166,21 +163,9 @@ class ThumbnailBrowserScreen(Screen):
         app = App.get_running_app()
 
         if len(images) > 0:
-            self.show_image_grid(True)
             for i, img in enumerate(images):
                 card = ImageCard(img, i, is_active = (i == app.active_index))
                 self.ids.thumbnail_grid.add_widget(card)
-        else:
-            self.show_image_grid(False)
-
-    def show_image_grid(self, show_grid):
-        """
-        Show the image grid
-        """
-        hide_id = "images_empty_label" if show_grid else "scroll_area"
-        show_id = "scroll_area" if show_grid else "images_empty_label"
-        self.ids[hide_id].opacity = 0
-        self.ids[show_id].opacity = 1
 
     def _on_active_index_change(self, instance, value):
         if not isinstance(value, int):

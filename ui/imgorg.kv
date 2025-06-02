@@ -3,6 +3,9 @@
     FloatLayout:
         Label:
             id: images_empty_label
+            pos: self.pos
+            size_hint: (1, 1)
+            opacity: 1 if len(app.image_list) == 0 else 0
             text: "Drop images or directory here to add to the catalog."
             font_size: '24sp'
             color: (0.7, 0.7, 0.7, 1)
@@ -13,8 +16,10 @@
             text_size: self.size
 
         BoxLayout:
+            id: grid_box
             pos: self.pos
             size_hint: (1, 1)
+            opacity: 1
             height: 100
             ScrollView:
                 id: scroll_area
