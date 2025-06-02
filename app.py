@@ -99,20 +99,19 @@ class ThumbnailBrowserScreen(Screen):
 
     def __init__(self, **kw):
         super().__init__(**kw)
-        Window.bind(size=self.update_column_size)
+        Window.bind(size=self._update_column_size)
         Window.bind(on_drop_file=self._on_drop_file)
         Window.bind(on_key_down=self._on_key_down)
         app = App.get_running_app()
         app.bind(active_index=self._on_active_index_change)
 
         Window.size = (1024, 1024)
-        self.update_column_size()
 
     def on_enter(self):
         app = App.get_running_app()
         app.bind(image_list=self._on_image_list_change)
         self._on_image_list_change(app, app.image_list)
-
+        
         Clock.schedule_once(self._wait_for_layout_ready, 0.1)
 
     def _wait_for_layout_ready(self, dt):
@@ -146,14 +145,23 @@ class ThumbnailBrowserScreen(Screen):
         except IndexError:
             pass
 
-    def update_column_size(self, *args):
+    def _update_column_size(self, *args):
         """
         Update the number of columns based on available width.
         """
-        Window.bind(on_resize=self.update_column_size)
         border_spacing = dp(50)
         available_width = Window.width - border_spacing
         self.columns = max(1, int(available_width / self.thumbnail_width))
+
+        # If there are less images than columns, resize the grid to fit the images
+        app = App.get_running_app()
+        image_count = len(app.image_list)
+        if image_count > 0 and  image_count < self.columns:
+            print( image_count, self.columns, image_count / self.columns)
+            self.size_hint_x = image_count / self.columns
+        else:
+            self.size_hint_x = 1
+        
         
         self.ids.thumbnail_grid.cols = self.columns
        
@@ -166,6 +174,7 @@ class ThumbnailBrowserScreen(Screen):
             for i, img in enumerate(images):
                 card = ImageCard(img, i, is_active = (i == app.active_index))
                 self.ids.thumbnail_grid.add_widget(card)
+        Clock.schedule_once(self._update_column_size, 0.1)
 
     def _on_active_index_change(self, instance, value):
         if not isinstance(value, int):
@@ -205,7 +214,6 @@ class ThumbnailBrowserScreen(Screen):
             app.set_active(new_index)
 
         self.scroll_to_current_thumb(None)
-
 
 if __name__ == "__main__":
     ImgOrgApp().run()
