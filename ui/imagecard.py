@@ -1,18 +1,63 @@
 from kivy.app import App
+from kivy.core.window import Window
+from kivy.clock import Clock
+from kivy.metrics import dp
+
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import Image
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.properties import DictProperty, ObjectProperty, StringProperty, BooleanProperty, NumericProperty
-from kivy.metrics import dp
 
-from kivy.lang import Builder
-Builder.load_file("ui/imagecard.kv")
+import time
 
 from catalog.thumbnail import ensure_thumbnail
 
 class ClickableImage(ButtonBehavior, Image):
     """An Image that can be clicked like a button"""
-    pass
+    
+    def __init__(self, on_click=None, **kwargs):
+        self.register_event_type('on_single_click')
+        self.register_event_type('on_double_click')
+        super().__init__(**kwargs)
+        self._last_click_time = 0
+
+    def on_touch_down(self, touch):
+        if self.collide_point(*touch.pos) and touch.button == 'left':
+            now = time.time()
+            modifiers = list(Window.modifiers)
+
+            if now - self._last_click_time < 0.2:
+                if self._click_event:
+                    self._click_event.cancel()
+                    self._click_event = None
+                    self.dispatch('on_double_click', modifiers)
+            else:
+                self._click_event = Clock.schedule_once(lambda dt: self.dispatch('on_single_click', modifiers), 0.2)
+                # if self.on_click:
+                #     self.on_click(touch)
+
+            self._last_click_time = now
+            return True
+        return super().on_touch_down(touch)
+
+
+    def on_single_click(self, modifiers):
+        print(f"Click", end=" ")
+        for m in modifiers:
+            print(m, end=" ")
+        print()
+
+    def on_double_click(self, modifiers):
+        print(f"Click click", end=" ")
+        for m in modifiers:
+            print(m, end=" ")
+        print()
+
+from kivy.factory import Factory
+Factory.register('ClickableImage', cls=ClickableImage)
+
+from kivy.lang import Builder
+Builder.load_file("ui/imagecard.kv")
 
 class ImageCard(BoxLayout):
     image_data = DictProperty()

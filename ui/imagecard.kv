@@ -4,7 +4,7 @@
     orientation: 'vertical'
     size_hint_y: None
     height: self.width
-    padding: dp(20)
+    padding: dp(10)
 
     canvas.before:
         Color:
@@ -20,7 +20,5 @@
 
     ClickableImage:
         source: root.thumb_source
-        allow_stretch: True
-        keep_ratio: True
-        size_hint_y: 0.8
-        on_release: root._on_image_click()
+        size_hint_y: None
+        on_double_click: root._on_image_click()
