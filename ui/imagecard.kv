@@ -10,13 +10,13 @@
         Color:
             rgba: (1, 1, 1, .15) if self.is_selected else (0, 0, 0, 0)
         Rectangle:
-            pos: (self.pos[0] + 2, self.pos[1] + 2)
-            size: (self.size[0] - 4, self.size[1] - 4)
+            pos: (self.pos[0], self.pos[1])
+            size: (self.size[0], self.size[1])
         Color:
             rgba: (0.6, 0.75, 0.75, 1) if self.is_active else (0, 0, 0, 0)
         Line:
-            width: 2.
-            rectangle: (self.x, self.y, self.width, self.height)
+            width: 1.5
+            rectangle: (self.x + 2, self.y + 2, self.width - 4, self.height - 4)
 
     ClickableImage:
         source: root.thumb_source
