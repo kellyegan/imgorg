@@ -42,16 +42,10 @@ class ClickableImage(ButtonBehavior, Image):
 
 
     def on_single_click(self, modifiers):
-        print(f"Click", end=" ")
-        for m in modifiers:
-            print(m, end=" ")
-        print()
+        pass
 
     def on_double_click(self, modifiers):
-        print(f"Click click", end=" ")
-        for m in modifiers:
-            print(m, end=" ")
-        print()
+        pass
 
 from kivy.factory import Factory
 Factory.register('ClickableImage', cls=ClickableImage)
@@ -79,7 +73,22 @@ class ImageCard(BoxLayout):
         if thumb_path is not None:
             self.thumb_source = thumb_path
 
-    def _on_image_click(self, *args):
+    def _on_single_click(self, modifiers, *args):
+        print("Single click")
+        if self.index is not None:
+            app = App.get_running_app()
+            if 'meta' not in modifiers:
+                app.deselect_all_images()
+
+            if 'shift' in modifiers:
+                app.select_between_active_and_index(self.index)
+            else:
+                app.toggle_selection(self.index)
+
+        app.set_active(self.index)
+
+
+    def _on_double_click(self, modifiers, *args):
         if self.index is not None:
             app = App.get_running_app()
             app.preview_image_at_index(self.index)

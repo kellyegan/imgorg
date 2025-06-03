@@ -52,12 +52,28 @@ class ImgOrgApp(App):
         self.selected_indexes.clear()
 
     def select_index(self, index):
+        if index < 0 or index >= len(self.image_list):
+            return
+        
         if index not in self.selected_indexes:
             self.selected_indexes.append(index)
+
+    def toggle_selection(self, index):
+        if index in self.selected_indexes:
+            self.deselect_index(index)
+        else:
+            self.select_index(index)
 
     def deselect_index(self, index):
         if index in self.selected_indexes:
             self.selected_indexes.remove(index)
+
+    def select_between_active_and_index(self, index):
+        start = index if index < self.active_index else self.active_index
+        end = index if index > self.active_index else self.active_index
+
+        for i in range(start, end + 1):
+            self.select_index(i)
 
     def add_images_from_path(self, filepath):
         images, import_duplicates = scan_for_images(filepath)
@@ -122,6 +138,7 @@ class ThumbnailBrowserScreen(Screen):
         Window.bind(on_key_down=self._on_key_down)
         app = App.get_running_app()
         app.bind(active_index=self._on_active_index_change)
+        app.bind(selected_indexes=self._on_selected_change)
 
         Window.size = (1024, 1024)
         Window.top = 50
@@ -210,6 +227,16 @@ class ThumbnailBrowserScreen(Screen):
                 thumb.set_active(True)
             else:
                 thumb.set_active(False)
+    
+    def _on_selected_change(self, instance, value):
+        print("Selected change", value)
+        app = App.get_running_app()
+
+        for thumb in self.ids.thumbnail_grid.children:
+            if thumb.index in app.selected_indexes:
+                thumb.set_selected(True)
+            else:
+                thumb.set_selected(False)
 
     def _on_key_down(self, window, key, scancode, codepoint, modifier):
         if self.manager.current != "browser":
