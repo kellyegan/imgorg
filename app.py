@@ -250,6 +250,8 @@ class ThumbnailBrowserScreen(Screen):
         app = App.get_running_app()
         new_index = app.active_index
 
+        print(key)
+
         if key == 276:  # Left arrow key
             new_index = app.active_index - 1
         elif key == 275:  # Right arrow key
@@ -261,6 +263,8 @@ class ThumbnailBrowserScreen(Screen):
         elif key == 32:  # Space bar
             app.preview_image_at_index(app.active_index)
             return
+        elif key == 13: # Enter key
+            app.toggle_selection(app.active_index)
         
         if 'meta' in modifiers:
             # print(key)
@@ -268,8 +272,6 @@ class ThumbnailBrowserScreen(Screen):
                 app.selected_all_indexes()
             elif key == 100: # D
                 app.deselect_all_indexes()
-            
-            
 
         if( new_index >= 0 and new_index < len(app.image_list)):
             app.set_active(new_index)
