@@ -74,7 +74,10 @@ class ImagePreviewScreen(Screen):
         self.current_image = instance.image_list[value]
 
         self.ids.preview_box.clear_widgets()
-        image_widget = Image(source=self.current_image["path"], fit_mode="contain")    
+        image_widget = Image(source=self.current_image["path"], fit_mode="contain")
+        # If you don't want to use scale up image use 'scale-down' instead
+        # image_widget = Image(source=self.current_image["path"], fit_mode="scale-down")
+        
         self.ids.preview_box.add_widget(image_widget)
 
     def _on_key_down(self, window, key, scancode, codepoint, modifier):
