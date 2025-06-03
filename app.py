@@ -124,6 +124,8 @@ class ThumbnailBrowserScreen(Screen):
         app.bind(active_index=self._on_active_index_change)
 
         Window.size = (1024, 1024)
+        Window.top = 50
+        Window.left = 10
 
     def on_enter(self):
         app = App.get_running_app()
