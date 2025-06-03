@@ -20,6 +20,7 @@ Builder.load_file("ui/imgorg.kv")
 class ImgOrgApp(App):
     image_list = ListProperty([])
     active_index = NumericProperty(None)
+    selected_indexes = ListProperty([])
 
     def build(self):
         self.sm = ScreenManager()
@@ -43,6 +44,20 @@ class ImgOrgApp(App):
     def set_active(self, index):
         if 0 <= index < len(self.image_list):
             self.active_index = index
+
+    def selected_all_images(self):
+        self.selected_indexes = [i for i in range(len(self.image_list))]
+
+    def deselect_all_images(self):
+        self.selected_indexes.clear()
+
+    def select_index(self, index):
+        if index not in self.selected_indexes:
+            self.selected_indexes.append(index)
+
+    def deselect_index(self, index):
+        if index in self.selected_indexes:
+            self.selected_indexes.remove(index)
 
     def add_images_from_path(self, filepath):
         images, import_duplicates = scan_for_images(filepath)
