@@ -136,13 +136,14 @@ class ThumbnailBrowserScreen(Screen):
         Window.bind(size=self._update_column_size)
         Window.bind(on_drop_file=self._on_drop_file)
         Window.bind(on_key_down=self._on_key_down)
-        app = App.get_running_app()
-        app.bind(active_index=self._on_active_index_change)
-        app.bind(selected_indexes=self._on_selected_change)
 
         Window.size = (1024, 1024)
         Window.top = 50
         Window.left = 10
+
+        app = App.get_running_app()
+        app.bind(active_index=self._on_active_index_change)
+        app.bind(selected_indexes=self._on_selected_change)
 
     def on_enter(self):
         app = App.get_running_app()
@@ -150,6 +151,19 @@ class ThumbnailBrowserScreen(Screen):
         self._on_image_list_change(app, app.image_list)
         
         Clock.schedule_once(self._wait_for_layout_ready, 0.1)
+
+    def check_selection(self):
+        app = App.get_running_app()
+
+        for thumb in self.ids.thumbnail_grid.children:
+            if thumb.index == app.active_index:
+                thumb.set_active(True)
+            else:
+                thumb.set_active(False)
+            if thumb.index in app.selected_indexes:
+                thumb.set_selected(True)
+            else:
+                thumb.set_selected(False)
 
     def _wait_for_layout_ready(self, dt):
         if self.ids.thumbnail_grid.height == 0:
@@ -209,7 +223,7 @@ class ThumbnailBrowserScreen(Screen):
 
         if len(images) > 0:
             for i, img in enumerate(images):
-                card = ImageCard(img, i, is_active = (i == app.active_index))
+                card = ImageCard(img, i, is_active = (i == app.active_index), is_selected=(i in app.selected_indexes))
                 self.ids.thumbnail_grid.add_widget(card)
         Clock.schedule_once(self._update_column_size, 0.1)
 
@@ -222,20 +236,12 @@ class ThumbnailBrowserScreen(Screen):
         
         app = App.get_running_app()
 
-        for thumb in self.ids.thumbnail_grid.children:
-            if thumb.index == app.active_index:
-                thumb.set_active(True)
-            else:
-                thumb.set_active(False)
+        self.check_selection()
     
     def _on_selected_change(self, instance, value):
         app = App.get_running_app()
 
-        for thumb in self.ids.thumbnail_grid.children:
-            if thumb.index in app.selected_indexes:
-                thumb.set_selected(True)
-            else:
-                thumb.set_selected(False)
+        self.check_selection()
 
     def _on_key_down(self, window, key, scancode, codepoint, modifiers):
         if self.manager.current != "browser":
