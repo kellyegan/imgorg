@@ -45,11 +45,11 @@ class ImgOrgApp(App):
         if 0 <= index < len(self.image_list):
             self.active_index = index
 
-    def selected_all_images(self):
+    def selected_all_indexes(self):
         self.selected_indexes = [i for i in range(len(self.image_list))]
 
-    def deselect_all_images(self):
-        self.selected_indexes.clear()
+    def deselect_all_indexes(self):
+        self.selected_indexes = []
 
     def select_index(self, index):
         if index < 0 or index >= len(self.image_list):
@@ -229,7 +229,6 @@ class ThumbnailBrowserScreen(Screen):
                 thumb.set_active(False)
     
     def _on_selected_change(self, instance, value):
-        print("Selected change", value)
         app = App.get_running_app()
 
         for thumb in self.ids.thumbnail_grid.children:
@@ -238,7 +237,7 @@ class ThumbnailBrowserScreen(Screen):
             else:
                 thumb.set_selected(False)
 
-    def _on_key_down(self, window, key, scancode, codepoint, modifier):
+    def _on_key_down(self, window, key, scancode, codepoint, modifiers):
         if self.manager.current != "browser":
             return
         
@@ -256,6 +255,15 @@ class ThumbnailBrowserScreen(Screen):
         elif key == 32:  # Space bar
             app.preview_image_at_index(app.active_index)
             return
+        
+        if 'meta' in modifiers:
+            # print(key)
+            if key == 97: # A
+                app.selected_all_indexes()
+            elif key == 100: # D
+                app.deselect_all_indexes()
+            
+            
 
         if( new_index >= 0 and new_index < len(app.image_list)):
             app.set_active(new_index)

@@ -74,11 +74,10 @@ class ImageCard(BoxLayout):
             self.thumb_source = thumb_path
 
     def _on_single_click(self, modifiers, *args):
-        print("Single click")
         if self.index is not None:
             app = App.get_running_app()
             if 'meta' not in modifiers:
-                app.deselect_all_images()
+                app.deselect_all_indexes()
 
             if 'shift' in modifiers:
                 app.select_between_active_and_index(self.index)
