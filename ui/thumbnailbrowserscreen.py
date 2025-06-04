@@ -140,7 +140,7 @@ class ThumbnailBrowserScreen(Screen):
         elif key == 274:  # Down arrow key
             new_index = app.active_index + self.columns
         elif key == 32:  # Space bar
-            app.preview_image_at_index(app.active_index)
+            app.view_image_preview(app.active_index)
             return
         elif key == 13: # Enter key
             app.toggle_selection(app.active_index)

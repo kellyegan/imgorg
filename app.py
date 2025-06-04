@@ -29,7 +29,7 @@ class ImgOrgApp(App):
 
         return self.sm
     
-    def preview_image_at_index(self, index):
+    def view_image_preview(self, index):
         self.set_active(index)
         self.sm.transition.direction = 'up'
         self.sm.current = "preview"
@@ -39,8 +39,9 @@ class ImgOrgApp(App):
         self.sm.current = "browser"        
 
     def set_active(self, index):
-        if 0 <= index < len(self.image_list):
-            self.active_index = index
+        if index < 0 or index >= len(self.image_list):
+            return
+        self.active_index = index
 
     def selected_all_indexes(self):
         self.selected_indexes = [i for i in range(len(self.image_list))]
@@ -51,7 +52,6 @@ class ImgOrgApp(App):
     def select_index(self, index):
         if index < 0 or index >= len(self.image_list):
             return
-        
         if index not in self.selected_indexes:
             self.selected_indexes.append(index)
 
