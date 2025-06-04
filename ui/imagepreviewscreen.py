@@ -4,34 +4,29 @@ from kivy.uix.image import Image
 from kivy.core.window import Window
 from kivy.clock import Clock
 
+from kivy.properties import StringProperty
+
 class ImagePreviewScreen(Screen):
+    image_source = StringProperty("")
+
     def __init__(self, **kw):
         super().__init__(**kw)
+        self.current_image = None
+
         Window.bind(on_key_down=self._on_key_down)
         app = App.get_running_app()
         app.bind(active_index=self._on_active_index_change)
 
     def on_pre_enter(self):
         app = App.get_running_app()
-        self.ids.preview_box.clear_widgets()
         self._on_active_index_change(app, app.active_index)
         
     def _on_active_index_change(self, instance, value):
         if not isinstance(value, int):
             return
         
-        if value < 0 or value >= len(instance.image_list):
-            print("Index out of bounds")
-            return
-        
         self.current_image = instance.image_list[value]
-
-        self.ids.preview_box.clear_widgets()
-        image_widget = Image(source=self.current_image["path"], fit_mode="contain")
-        # If you don't want to use scale up image use 'scale-down' instead
-        # image_widget = Image(source=self.current_image["path"], fit_mode="scale-down")
-        
-        self.ids.preview_box.add_widget(image_widget)
+        self.image_source = self.current_image["path"]
 
     def _on_key_down(self, window, key, scancode, codepoint, modifier):
         if self.manager.current != "preview":

@@ -52,7 +52,6 @@ class ImgOrgApp(App):
         self.add_images_from_path(path_string)
         self.view_thumbnail_browser()
 
-
     def set_active(self, index):
         if index < 0 or index >= len(self.image_list):
             return
