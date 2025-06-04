@@ -22,6 +22,8 @@ class ImgOrgApp(App):
     def build(self):
         Builder.load_file("ui/thumbnailbrowserscreen.kv")
         Builder.load_file("ui/imagepreviewscreen.kv")
+
+        Window.bind(on_drop_file=self._on_drop_file)
         
         Window.size = (1024, 1024)
         Window.top = 50
@@ -41,9 +43,15 @@ class ImgOrgApp(App):
         self.sm.transition.direction = 'up'
         self.sm.current = "preview"
 
-    def view_thumbnail_browser(self, dt):
+    def view_thumbnail_browser(self):
         self.sm.transition.direction = 'down'
-        self.sm.current = "browser"        
+        self.sm.current = "browser"
+
+    def _on_drop_file(self, window, filepath, x, y):
+        path_string = filepath.decode('utf-8')
+        self.add_images_from_path(path_string)
+        self.view_thumbnail_browser()
+
 
     def set_active(self, index):
         if index < 0 or index >= len(self.image_list):

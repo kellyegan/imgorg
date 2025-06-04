@@ -13,7 +13,6 @@ class ThumbnailBrowserScreen(Screen):
     def __init__(self, **kw):
         super().__init__(**kw)
         Window.bind(size=self._update_column_size)
-        Window.bind(on_drop_file=self._on_drop_file)
         Window.bind(on_key_down=self._on_key_down)
 
         self.app = App.get_running_app()
@@ -35,10 +34,6 @@ class ThumbnailBrowserScreen(Screen):
     def _on_image_list_change(self, instance, value):
         image_list = value
         self.load_image_grid(image_list)
-
-    def _on_drop_file(self, window, filepath, x, y):
-        path_string = filepath.decode('utf-8')
-        self.app.add_images_from_path(path_string)
 
     def _scroll_to_active_thumb(self, dt):
         index = self.app.active_index

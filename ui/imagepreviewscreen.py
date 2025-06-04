@@ -41,7 +41,7 @@ class ImagePreviewScreen(Screen):
         num_images = len(app.image_list)
 
         if key in (27, 32):  # Escape key
-            Clock.schedule_once(app.view_thumbnail_browser, 0.05)
+            Clock.schedule_once(lambda dt: app.view_thumbnail_browser(), 0.05)
         elif key == 276:  # Left arrow key
             new_index = (app.active_index - 1) % num_images
             app.set_active(new_index)
