@@ -16,10 +16,6 @@ class ThumbnailBrowserScreen(Screen):
         Window.bind(on_drop_file=self._on_drop_file)
         Window.bind(on_key_down=self._on_key_down)
 
-        Window.size = (1024, 1024)
-        Window.top = 50
-        Window.left = 10
-
         app = App.get_running_app()
         app.bind(active_index=self._on_active_index_change)
         app.bind(selected_indexes=self._on_selected_change)

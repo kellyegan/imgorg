@@ -1,5 +1,6 @@
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager
+from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.config import Config
 
@@ -20,6 +21,10 @@ class ImgOrgApp(App):
     selected_indexes = ListProperty([])
 
     def build(self):
+        Window.size = (1024, 1024)
+        Window.top = 50
+        Window.left = 10
+
         self.sm = ScreenManager()
         self.sm.add_widget(ThumbnailBrowserScreen())
         self.sm.add_widget(ImagePreviewScreen())
