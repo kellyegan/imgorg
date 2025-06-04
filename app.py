@@ -11,8 +11,8 @@ from ui.thumbnailbrowserscreen import ThumbnailBrowserScreen
 from ui.imagepreviewscreen import ImagePreviewScreen
 from ui.importscreen import ImportScreen
 
-from catalog.db import get_all_images, add_image_list, check_catalog_duplicate  # You must have this function in catalog/db.py
-from catalog.image_importer import scan_for_images
+from catalog.db import get_all_images, add_image_list, check_catalog_duplicate   # You must have this function in catalog/db.py
+from catalog.image_importer import scan_for_images, check_duplicates
 
 Config.set('kivy', 'exit_on_escape', '0')
 
@@ -79,17 +79,18 @@ class ImgOrgApp(App):
         self.process_imports(paths)
 
     def process_imports(self, paths):
+        images = []
         for path in paths:
-            print(path)
+            images += scan_for_images(path)
+
+        unique, duplicates = check_duplicates(images)
+
+        print(f"Unique images: {len(unique)}")
+
+        for duplicate_group in duplicates.values():
+            print(f"Duplicate group: {duplicate_group}")
 
         self.view_import_screen()
-
-    def add_images_from_path(self, filepath):
-        print("add_images_from_path", filepath)
-        images, import_duplicates = scan_for_images(filepath)
-        imports, catalog_duplicates = check_catalog_duplicate(images)
-        add_image_list(imports)
-        self.image_list = get_all_images()
 
     def set_active(self, index):
         if index < 0 or index >= len(self.image_list):

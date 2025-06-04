@@ -55,31 +55,37 @@ def get_image_details(file_path):
     
     return results
 
-
 def scan_for_images(path):
     if os.path.isdir(path):
         return scan_dir_for_images(path)
     elif os.path.isfile(path):
-        details = get_image_details(path)
-        if details:
-            return [details] , []
-    return [], []
-
+        return [get_image_details(path)]
 
 def scan_dir_for_images(base_dir):
     base_path = Path(base_dir)
     images = []
-    duplicates = []
-    hashes = set()
     
     for filepath in sorted(base_path.rglob("*"), key=lambda x: (len(str(x)), str(x).lower())):
         if filepath.suffix.lower() in IMAGE_EXTENSIONS and filepath.is_file():
             image_details = get_image_details(filepath)
+
             if image_details:
-                if image_details['filehash'] not in hashes:
-                    hashes.add(image_details['filehash'])
-                    images.append(image_details)
-                else:
-                    duplicates.append(image_details)
-           
-    return images, duplicates
+                images.append(image_details)
+
+    return images
+
+def check_duplicates(images):
+    images_by_hash = dict()
+
+    for image in images:
+        hash = image['filehash']
+        if hash in images_by_hash:
+            images_by_hash[hash].append(image)
+        else:
+            images_by_hash[hash] = [image]
+
+    duplicates = {hash: image_list for hash, image_list in images_by_hash.items() if len(image_list) > 1}
+    unique = [value for key, value in images_by_hash.items() if len(value) == 1]
+
+    return unique, duplicates
+
