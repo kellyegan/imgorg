@@ -4,10 +4,10 @@ from kivy.uix.image import Image
 from kivy.core.window import Window
 from kivy.clock import Clock
 
-from kivy.properties import StringProperty
+from kivy.properties import ObjectProperty, StringProperty
 
 class ImagePreviewScreen(Screen):
-    image_source = StringProperty("")
+    current_image = ObjectProperty(None)
 
     def __init__(self, **kw):
         super().__init__(**kw)
@@ -26,7 +26,6 @@ class ImagePreviewScreen(Screen):
             return
         
         self.current_image = instance.image_list[value]
-        self.image_source = self.current_image["path"]
 
     def _on_key_down(self, window, key, scancode, codepoint, modifier):
         if self.manager.current != "preview":

@@ -10,4 +10,4 @@
     Image:
       id: image_preview
       fit_mode: "contain" # or scale-down
-      source: root.image_source
+      source: root.current_image["path"] if root.current_image is not None else ""
