@@ -48,27 +48,27 @@ class ImgOrgApp(App):
             return
         self.active_index = index
 
-    def selected_all_indexes(self):
-        self.selected_indexes = [i for i in range(len(self.image_list))]
-
-    def deselect_all_indexes(self):
-        self.selected_indexes = []
-
     def select_index(self, index):
         if index < 0 or index >= len(self.image_list):
             return
         if index not in self.selected_indexes:
             self.selected_indexes.append(index)
 
+    def deselect_index(self, index):
+        if index in self.selected_indexes:
+            self.selected_indexes.remove(index)
+
     def toggle_selection(self, index):
         if index in self.selected_indexes:
             self.deselect_index(index)
         else:
             self.select_index(index)
+            
+    def selected_all_indexes(self):
+        self.selected_indexes = [i for i in range(len(self.image_list))]
 
-    def deselect_index(self, index):
-        if index in self.selected_indexes:
-            self.selected_indexes.remove(index)
+    def deselect_all_indexes(self):
+        self.selected_indexes = []
 
     def select_between_active_and_index(self, index):
         start = index if index < self.active_index else self.active_index
