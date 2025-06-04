@@ -1,0 +1,27 @@
+<ImportScreen>:
+  name: "import"
+
+  Label:
+    text: "Suspected duplicates"
+
+  BoxLayout:
+    orientation: "vertical"
+    spacing: dp(25)
+    padding: dp(50)
+
+    BoxLayout:
+      id: duplicates_list
+      orientation: "vertical"
+      spacing: dp(10)
+      padding: dp(5)
+
+    BoxLayout:
+      orientation: "horizontal"
+      size_hint_y: 0.1
+      spacing: dp(10)
+
+      Button:
+        text: "Cancel"
+        on_release: app.view_thumbnail_browser()
+      Button:
+        text: "Import images"
