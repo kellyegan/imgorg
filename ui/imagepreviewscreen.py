@@ -9,10 +9,12 @@ class ImagePreviewScreen(Screen):
         super().__init__(**kw)
         Window.bind(on_key_down=self._on_key_down)
         app = App.get_running_app()
+        app.bind(active_index=self._on_active_index_change)
 
     def on_pre_enter(self):
         app = App.get_running_app()
         self.ids.preview_box.clear_widgets()
+        self._on_active_index_change(app, app.active_index)
         
     def _on_active_index_change(self, instance, value):
         if not isinstance(value, int):

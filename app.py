@@ -6,13 +6,14 @@ from kivy.config import Config
 
 from kivy.properties import ListProperty, NumericProperty
 
-from ui.thumbnail_browser_screen import ThumbnailBrowserScreen
-from ui.image_preview_screen import ImagePreviewScreen
+from ui.thumbnailbrowserscreen import ThumbnailBrowserScreen
+from ui.imagepreviewscreen import ImagePreviewScreen
 
 from catalog.db import get_all_images, add_image_list, check_catalog_duplicate  # You must have this function in catalog/db.py
 from catalog.image_importer import scan_for_images
 
 Config.set('kivy', 'exit_on_escape', '0')
+Builder.load_file("ui/imgorg.kv")
 
 class ImgOrgApp(App):
     image_list = ListProperty([])
@@ -20,9 +21,6 @@ class ImgOrgApp(App):
     selected_indexes = ListProperty([])
 
     def build(self):
-        Builder.load_file("ui/thumbnail_browser_screen.kv")
-        Builder.load_file("ui/image_preview_screen.kv")
-
         Window.size = (1024, 1024)
         Window.top = 50
         Window.left = 10
