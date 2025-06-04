@@ -13,7 +13,7 @@ class ImagePreviewScreen(Screen):
 
     def on_pre_enter(self):
         app = App.get_running_app()
-        self.ids["preview_box"].clear_widgets()
+        self.ids.preview_box.clear_widgets()
         self._on_active_index_change(app, app.active_index)
         
     def _on_active_index_change(self, instance, value):

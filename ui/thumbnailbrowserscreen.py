@@ -27,24 +27,11 @@ class ThumbnailBrowserScreen(Screen):
         
         Clock.schedule_once(self._wait_for_layout_ready, 0.1)
 
-    def check_selection(self):
-        app = App.get_running_app()
-
-        for thumb in self.ids.thumbnail_grid.children:
-            if thumb.index == app.active_index:
-                thumb.set_active(True)
-            else:
-                thumb.set_active(False)
-            if thumb.index in app.selected_indexes:
-                thumb.set_selected(True)
-            else:
-                thumb.set_selected(False)
-
     def _wait_for_layout_ready(self, dt):
         if self.ids.thumbnail_grid.height == 0:
             Clock.schedule_once(self._wait_for_layout_ready, 0.05)
         else:
-            Clock.schedule_once(self.scroll_to_current_thumb, 0.0)
+            Clock.schedule_once(self._scroll_to_active_thumb, 0.0)
 
     def _on_image_list_change(self, instance, value):
         image_list = value
@@ -55,7 +42,7 @@ class ThumbnailBrowserScreen(Screen):
         app = App.get_running_app()
         app.add_images_from_path(path_string)
 
-    def scroll_to_current_thumb(self, dt):
+    def _scroll_to_active_thumb(self, dt):
         app = App.get_running_app()
         index = app.active_index
 
@@ -103,20 +90,20 @@ class ThumbnailBrowserScreen(Screen):
         Clock.schedule_once(self._update_column_size, 0.1)
 
     def _on_active_index_change(self, instance, value):
-        if not isinstance(value, int):
-            return
-        
-        if self.manager.current != "browser":
-            return        
-        
         app = App.get_running_app()
-
-        self.check_selection()
+        for thumb in self.ids.thumbnail_grid.children:
+            if thumb.index == app.active_index:
+                thumb.set_active(True)
+            else:
+                thumb.set_active(False)
     
     def _on_selected_change(self, instance, value):
         app = App.get_running_app()
-
-        self.check_selection()
+        for thumb in self.ids.thumbnail_grid.children:
+            if thumb.index in app.selected_indexes:
+                thumb.set_selected(True)
+            else:
+                thumb.set_selected(False)
 
     def _on_key_down(self, window, key, scancode, codepoint, modifiers):
         if self.manager.current != "browser":
@@ -151,5 +138,5 @@ class ThumbnailBrowserScreen(Screen):
         if( new_index >= 0 and new_index < len(app.image_list)):
             app.set_active(new_index)
 
-        self.scroll_to_current_thumb(None)
+        self._scroll_to_active_thumb(None)
 
