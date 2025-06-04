@@ -13,7 +13,6 @@ from catalog.db import get_all_images, add_image_list, check_catalog_duplicate  
 from catalog.image_importer import scan_for_images
 
 Config.set('kivy', 'exit_on_escape', '0')
-Builder.load_file("ui/imgorg.kv")
 
 class ImgOrgApp(App):
     image_list = ListProperty([])
@@ -21,6 +20,9 @@ class ImgOrgApp(App):
     selected_indexes = ListProperty([])
 
     def build(self):
+        Builder.load_file("ui/thumbnailbrowserscreen.kv")
+        Builder.load_file("ui/imagepreviewscreen.kv")
+        
         Window.size = (1024, 1024)
         Window.top = 50
         Window.left = 10
