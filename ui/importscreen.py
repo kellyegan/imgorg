@@ -15,10 +15,6 @@ class ImportScreen(Screen):
     def on_enter(self, *args):
         super().on_enter(*args)
 
-        print("The import queue")
-        for path in self.import_queue:
-            print(path)
-        print("That was the import queue")
 
     def add_to_import_queue(self, image_path):
         self.import_queue.append(image_path)

@@ -3,6 +3,7 @@ from kivy.uix.screenmanager import ScreenManager
 from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.config import Config
+from kivy.clock import Clock
 
 from kivy.properties import ListProperty, NumericProperty
 
@@ -20,12 +21,17 @@ class ImgOrgApp(App):
     active_index = NumericProperty(None)
     selected_indexes = ListProperty([])
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.drop_buffer = []
+        self._drop_timer = None
+
     def build(self):
         Builder.load_file("ui/thumbnailbrowserscreen.kv")
         Builder.load_file("ui/imagepreviewscreen.kv")
         Builder.load_file("ui/importscreen.kv")
 
-        Window.bind(on_drop_file=self._on_drop_file)
+        Window.bind(on_drop_file=self.on_drop_file)
         
         Window.size = (1024, 1024)
         Window.top = 50
@@ -50,10 +56,40 @@ class ImgOrgApp(App):
         self.sm.transition.direction = 'down'
         self.sm.current = "browser"
 
-    def _on_drop_file(self, window, filepath, x, y):
+    def view_import_screen(self):
+        self.sm.transition.direction = 'left'
+        self.sm.current = "import"
+
+    def on_drop_file(self, window, filepath, x, y):
         path_string = filepath.decode('utf-8')
-        self.add_images_from_path(path_string)
-        self.view_thumbnail_browser()
+
+        self.drop_buffer.append(path_string)
+
+        if self._drop_timer:
+            self._drop_timer.cancel()
+
+        # Wait 100ms to allow all dropfile event to accumulate
+        self._drop_timer = Clock.schedule_once(self._handle_drop_buffer, 0.1)
+
+    def _handle_drop_buffer(self, dt):
+        paths = self.drop_buffer
+        self.drop_buffer = []
+        self._drop_timer = None
+
+        self.process_imports(paths)
+
+    def process_imports(self, paths):
+        for path in paths:
+            print(path)
+
+        self.view_import_screen()
+
+    def add_images_from_path(self, filepath):
+        print("add_images_from_path", filepath)
+        images, import_duplicates = scan_for_images(filepath)
+        imports, catalog_duplicates = check_catalog_duplicate(images)
+        add_image_list(imports)
+        self.image_list = get_all_images()
 
     def set_active(self, index):
         if index < 0 or index >= len(self.image_list):
@@ -88,13 +124,6 @@ class ImgOrgApp(App):
 
         for i in range(start, end + 1):
             self.select_index(i)
-
-    def add_images_from_path(self, filepath):
-        images, import_duplicates = scan_for_images(filepath)
-        imports, catalog_duplicates = check_catalog_duplicate(images)
-        add_image_list(imports)
-        self.image_list = get_all_images()
-
 
 if __name__ == "__main__":
     ImgOrgApp().run()
