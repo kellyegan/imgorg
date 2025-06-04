@@ -8,6 +8,7 @@ from kivy.properties import ListProperty, NumericProperty
 
 from ui.thumbnailbrowserscreen import ThumbnailBrowserScreen
 from ui.imagepreviewscreen import ImagePreviewScreen
+from ui.importscreen import ImportScreen
 
 from catalog.db import get_all_images, add_image_list, check_catalog_duplicate  # You must have this function in catalog/db.py
 from catalog.image_importer import scan_for_images
@@ -22,6 +23,7 @@ class ImgOrgApp(App):
     def build(self):
         Builder.load_file("ui/thumbnailbrowserscreen.kv")
         Builder.load_file("ui/imagepreviewscreen.kv")
+        Builder.load_file("ui/importscreen.kv")
 
         Window.bind(on_drop_file=self._on_drop_file)
         
@@ -32,6 +34,7 @@ class ImgOrgApp(App):
         self.sm = ScreenManager()
         self.sm.add_widget(ThumbnailBrowserScreen())
         self.sm.add_widget(ImagePreviewScreen())
+        self.sm.add_widget(ImportScreen())
 
         self.image_list = get_all_images()
         self.active_index = 0
