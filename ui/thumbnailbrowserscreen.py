@@ -16,14 +16,13 @@ class ThumbnailBrowserScreen(Screen):
         Window.bind(on_drop_file=self._on_drop_file)
         Window.bind(on_key_down=self._on_key_down)
 
-        app = App.get_running_app()
-        app.bind(active_index=self._on_active_index_change)
-        app.bind(selected_indexes=self._on_selected_change)
+        self.app = App.get_running_app()
+        self.app.bind(active_index=self._on_active_index_change)
+        self.app.bind(selected_indexes=self._on_selected_change)
 
     def on_enter(self):
-        app = App.get_running_app()
-        app.bind(image_list=self._on_image_list_change)
-        self._on_image_list_change(app, app.image_list)
+        self.app.bind(image_list=self._on_image_list_change)
+        self._on_image_list_change(self.app, self.app.image_list)
         
         Clock.schedule_once(self._wait_for_layout_ready, 0.1)
 
@@ -39,12 +38,10 @@ class ThumbnailBrowserScreen(Screen):
 
     def _on_drop_file(self, window, filepath, x, y):
         path_string = filepath.decode('utf-8')
-        app = App.get_running_app()
-        app.add_images_from_path(path_string)
+        self.app.add_images_from_path(path_string)
 
     def _scroll_to_active_thumb(self, dt):
-        app = App.get_running_app()
-        index = app.active_index
+        index = self.app.active_index
 
         grid = self.ids.thumbnail_grid
         scrollview = self.ids.scroll_area
@@ -67,40 +64,35 @@ class ThumbnailBrowserScreen(Screen):
         self.columns = max(1, int(available_width / self.thumbnail_width))
 
         # If there are less images than columns, resize the grid to fit the images
-        app = App.get_running_app()
-        image_count = len(app.image_list)
+        image_count = len(self.app.image_list)
         if image_count > 0 and  image_count < self.columns:
             print( image_count, self.columns, image_count / self.columns)
             self.size_hint_x = image_count / self.columns
         else:
             self.size_hint_x = 1
         
-        
         self.ids.thumbnail_grid.cols = self.columns
        
     def load_image_grid(self, images):
         # Clear existing widgets in the grid layout
         self.ids.thumbnail_grid.clear_widgets()
-        app = App.get_running_app()
 
         if len(images) > 0:
             for i, img in enumerate(images):
-                card = ImageCard(img, i, is_active = (i == app.active_index), is_selected=(i in app.selected_indexes))
+                card = ImageCard(img, i, is_active = (i == self.app.active_index), is_selected=(i in self.app.selected_indexes))
                 self.ids.thumbnail_grid.add_widget(card)
         Clock.schedule_once(self._update_column_size, 0.1)
 
     def _on_active_index_change(self, instance, value):
-        app = App.get_running_app()
         for thumb in self.ids.thumbnail_grid.children:
-            if thumb.index == app.active_index:
+            if thumb.index == self.app.active_index:
                 thumb.set_active(True)
             else:
                 thumb.set_active(False)
     
     def _on_selected_change(self, instance, value):
-        app = App.get_running_app()
         for thumb in self.ids.thumbnail_grid.children:
-            if thumb.index in app.selected_indexes:
+            if thumb.index in self.app.selected_indexes:
                 thumb.set_selected(True)
             else:
                 thumb.set_selected(False)
@@ -109,34 +101,31 @@ class ThumbnailBrowserScreen(Screen):
         if self.manager.current != "browser":
             return
         
-        app = App.get_running_app()
-        new_index = app.active_index
-
-        print(key)
+        new_index = self.app.active_index
 
         if key == 276:  # Left arrow key
-            new_index = app.active_index - 1
+            new_index = self.app.active_index - 1
         elif key == 275:  # Right arrow key
-            new_index = app.active_index + 1
+            new_index = self.app.active_index + 1
         elif key == 273:  # Up arrow key
-            new_index = app.active_index - self.columns     
+            new_index = self.app.active_index - self.columns     
         elif key == 274:  # Down arrow key
-            new_index = app.active_index + self.columns
+            new_index = self.app.active_index + self.columns
         elif key == 32:  # Space bar
-            app.view_image_preview(app.active_index)
+            self.app.view_image_preview(self.app.active_index)
             return
         elif key == 13: # Enter key
-            app.toggle_selection(app.active_index)
+            self.app.toggle_selection(self.app.active_index)
         
         if 'meta' in modifiers:
             # print(key)
             if key == 97: # A
-                app.selected_all_indexes()
+                self.app.selected_all_indexes()
             elif key == 100: # D
-                app.deselect_all_indexes()
+                self.app.deselect_all_indexes()
 
-        if( new_index >= 0 and new_index < len(app.image_list)):
-            app.set_active(new_index)
+        if( new_index >= 0 and new_index < len(self.app.image_list)):
+            self.app.set_active(new_index)
 
         self._scroll_to_active_thumb(None)
 

@@ -90,7 +90,7 @@ class ImageCard(BoxLayout):
     def _on_double_click(self, modifiers, *args):
         if self.index is not None:
             app = App.get_running_app()
-            app.preview_image_at_index(self.index)
+            app.view_image_preview(self.index)
 
     def set_active(self, active):
         self.is_active = active
