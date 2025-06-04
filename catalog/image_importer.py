@@ -74,7 +74,7 @@ def scan_dir_for_images(base_dir):
 
     return images
 
-def check_duplicates(images):
+def find_duplicates(images):
     images_by_hash = dict()
 
     for image in images:

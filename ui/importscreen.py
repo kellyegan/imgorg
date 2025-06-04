@@ -7,14 +7,34 @@ from kivy.clock import Clock
 from kivy.properties import ListProperty
 
 from catalog.db import get_all_images, add_image_list, check_catalog_duplicate  # You must have this function in catalog/db.py
-from catalog.image_importer import scan_for_images
+from catalog.image_importer import scan_for_images, find_duplicates
 
 class ImportScreen(Screen):
-    import_queue = ListProperty([])
+    images_to_import = ListProperty([])
 
-    def on_enter(self, *args):
-        super().on_enter(*args)
+    def set_paths_to_import(self, paths):
+        images = []
+        for path in paths:
+            images += scan_for_images(path)
+
+        self.images_to_import = images
+        unique, duplicates = find_duplicates(self.images_to_import)
+        self.unique_images = unique
+        self.duplicates = duplicates
+
+        print(f"{len(self.unique_images)} unique images")
+        for duplicate in self.duplicates:
+            print("Duplicates:")
+            for duplicate_image in self.duplicates[duplicate]:
+                print(duplicate_image["path"])
 
 
-    def add_to_import_queue(self, image_path):
-        self.import_queue.append(image_path)
+
+    # unique, duplicates = find_duplicates(images)
+
+    # print(f"Unique images: {len(unique)}")
+
+    # for duplicate_group in duplicates.values():
+    #     print("Duplicates:")
+    #     for image in duplicate_group:
+    #         print(image["path"])

@@ -12,7 +12,6 @@ from ui.imagepreviewscreen import ImagePreviewScreen
 from ui.importscreen import ImportScreen
 
 from catalog.db import get_all_images, add_image_list, check_catalog_duplicate   # You must have this function in catalog/db.py
-from catalog.image_importer import scan_for_images, check_duplicates
 
 Config.set('kivy', 'exit_on_escape', '0')
 
@@ -79,16 +78,8 @@ class ImgOrgApp(App):
         self.process_imports(paths)
 
     def process_imports(self, paths):
-        images = []
-        for path in paths:
-            images += scan_for_images(path)
-
-        unique, duplicates = check_duplicates(images)
-
-        print(f"Unique images: {len(unique)}")
-
-        for duplicate_group in duplicates.values():
-            print(f"Duplicate group: {duplicate_group}")
+        import_screen = self.root.get_screen("import")
+        import_screen.set_paths_to_import(paths)
 
         self.view_import_screen()
 
