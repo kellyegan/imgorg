@@ -77,15 +77,22 @@ def scan_dir_for_images(base_dir):
 def find_duplicates(images):
     images_by_hash = dict()
 
-    for image in images:
-        hash = image['filehash']
+    for image_a in images:
+        hash = image_a['filehash']
+        path = image_a["path"]
+
+        same_path = False
         if hash in images_by_hash:
-            images_by_hash[hash].append(image)
+            for image_b in images_by_hash[hash]:
+                if path == image_b["path"]:
+                    same_path = True
+            if not same_path:
+                images_by_hash[hash].append(image_a)
         else:
-            images_by_hash[hash] = [image]
+            images_by_hash[hash] = [image_a]
 
     duplicates = {hash: image_list for hash, image_list in images_by_hash.items() if len(image_list) > 1}
-    unique = [value for key, value in images_by_hash.items() if len(value) == 1]
+    unique = [value[0] for key, value in images_by_hash.items() if len(value) == 1]
 
     return unique, duplicates
 
