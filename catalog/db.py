@@ -51,6 +51,7 @@ def is_duplicate(connection, image_details):
 def check_catalog_duplicate(image_details_list):
     images = []
     duplicates = []
+    already_in_catalog = 0
 
     with get_connection(DB_NAME) as conn:
         conn.row_factory = sqlite3.Row
@@ -60,9 +61,11 @@ def check_catalog_duplicate(image_details_list):
                 # If it is same image just ignore it
                 if image_details["path"] != conflict[1]["path"]:
                     duplicates.append(conflict)
+                else:
+                    already_in_catalog += 1
             else:
                images.append(image_details)
-        return images, duplicates
+        return images, duplicates, already_in_catalog
 
 def add_image(connection, img_details, ignore_duplicate = False):
     cur = connection.cursor()
