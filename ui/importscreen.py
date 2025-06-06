@@ -28,10 +28,10 @@ class ImportScreen(Screen):
 
         not_in_catalog, duplicate_in_catalog, in_catalog_count = check_catalog_duplicate(unique)
 
-        print(f"{len(not_in_catalog)} imports not in catalog. ({in_catalog_count}) already in catalog")
+        print(f"{len(not_in_catalog)} imports not in catalog. {in_catalog_count} already in catalog.")
+        print(f"{len(duplicate_in_catalog)} imports suspected duplicates.")
 
         for duplicate in duplicate_in_catalog:
             print("Duplicates:")
-            for duplicate_image in self.duplicates[duplicate]:
-                print(duplicate_image["path"])
+            print(f"{duplicate[0]['path']} matches {duplicate[1]['path']}")
 
