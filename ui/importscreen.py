@@ -22,7 +22,7 @@ class ImportScreen(Screen):
 
         print(f"{len(unique)} unique images in imports")
         for duplicate in duplicates:
-            print("Duplicates:")
+            print("These images appear to be the same:")
             for duplicate_image in duplicates[duplicate]:
                 print(duplicate_image["path"])
 
@@ -35,5 +35,6 @@ class ImportScreen(Screen):
             print("Duplicates:")
             print(f"{duplicate[0]['filename']} matches {duplicate[1]['filename']}")
 
-    
+    def list_duplicates():
+        pass
 

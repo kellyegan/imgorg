@@ -1,23 +1,44 @@
 <ImportScreen>:
   name: "import"
 
-  Label:
-    text: "Suspected duplicates"
-
   BoxLayout:
     orientation: "vertical"
     spacing: dp(25)
     padding: dp(50)
 
+    Label:
+      text: "Import things man"
+      text_size: self.size
+      halign: 'left'
+      valign: 'top'
+
     BoxLayout:
-      id: duplicates_list
+      id: import_duplicates
       orientation: "vertical"
       spacing: dp(10)
       padding: dp(5)
 
+    Label:
+      text:"Dupes in the ports"
+      text_size: self.size
+      halign: 'left'
+      valign: 'top'
+    
+    BoxLayout:
+      id: catalog_duplicates
+      orientation: "vertical"
+      spacing: dp(10)
+      padding: dp(5)
+
+      Label:
+        text: "Duplicate images in catalog:"
+        text_size: self.size
+        halign: 'left'
+        valign: 'top'
+
     BoxLayout:
       orientation: "horizontal"
-      size_hint_y: 0.1
+      size_hint_y: 0.2
       spacing: dp(10)
 
       Button:
