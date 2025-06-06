@@ -6,7 +6,7 @@ from kivy.clock import Clock
 
 from kivy.properties import ListProperty
 
-from catalog.db import get_all_images, add_image_list, check_catalog_duplicate  # You must have this function in catalog/db.py
+from catalog.db import get_all_images, add_image_list, find_catalog_duplicates  # You must have this function in catalog/db.py
 from catalog.image_importer import scan_for_images, find_duplicates
 
 class ImportScreen(Screen):
@@ -26,12 +26,14 @@ class ImportScreen(Screen):
             for duplicate_image in duplicates[duplicate]:
                 print(duplicate_image["path"])
 
-        not_in_catalog, duplicate_in_catalog, in_catalog_count = check_catalog_duplicate(unique)
+        not_in_catalog, duplicate_in_catalog, in_catalog_count = find_catalog_duplicates(unique)
 
         print(f"{len(not_in_catalog)} imports not in catalog. {in_catalog_count} already in catalog.")
         print(f"{len(duplicate_in_catalog)} imports suspected duplicates.")
 
         for duplicate in duplicate_in_catalog:
             print("Duplicates:")
-            print(f"{duplicate[0]['path']} matches {duplicate[1]['path']}")
+            print(f"{duplicate[0]['filename']} matches {duplicate[1]['filename']}")
+
+    
 

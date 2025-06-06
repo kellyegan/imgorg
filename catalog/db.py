@@ -48,7 +48,7 @@ def is_duplicate(connection, image_details):
     else:
         return None
     
-def check_catalog_duplicate(image_details_list):
+def find_catalog_duplicates(image_details_list):
     images = []
     duplicates = []
     already_in_catalog = 0
@@ -59,7 +59,7 @@ def check_catalog_duplicate(image_details_list):
             conflict = is_duplicate(conn, image_details)
             if conflict:
                 # If it is same image just ignore it
-                if image_details["path"] != conflict[1]["path"]:
+                if image_details["filename"] != conflict[1]["filename"]:
                     duplicates.append(conflict)
                 else:
                     already_in_catalog += 1

@@ -11,7 +11,7 @@ from ui.thumbnailbrowserscreen import ThumbnailBrowserScreen
 from ui.imagepreviewscreen import ImagePreviewScreen
 from ui.importscreen import ImportScreen
 
-from catalog.db import get_all_images, add_image_list, check_catalog_duplicate   # You must have this function in catalog/db.py
+from catalog.db import get_all_images, add_image_list, find_catalog_duplicates   # You must have this function in catalog/db.py
 
 Config.set('kivy', 'exit_on_escape', '0')
 
