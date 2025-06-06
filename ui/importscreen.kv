@@ -7,10 +7,12 @@
     padding: dp(50)
 
     Label:
-      text: "Import things man"
+      text: "Import images"
       text_size: self.size
       halign: 'left'
       valign: 'top'
+      font_size: "48sp"
+      size_hint_y: 0.2
 
     BoxLayout:
       id: import_duplicates
@@ -18,11 +20,12 @@
       spacing: dp(10)
       padding: dp(5)
 
-    Label:
-      text:"Dupes in the ports"
-      text_size: self.size
-      halign: 'left'
-      valign: 'top'
+      Label:
+        text:"These images appear to be the same. Which do you want to import?"
+        text_size: self.size
+        halign: 'left'
+        valign: 'top'
+        font_size: "24sp"
     
     BoxLayout:
       id: catalog_duplicates
@@ -31,10 +34,11 @@
       padding: dp(5)
 
       Label:
-        text: "Duplicate images in catalog:"
+        text: "These images are already in the catalog. Do you want to update the filepath?"
         text_size: self.size
         halign: 'left'
         valign: 'top'
+        font_size: "24sp"
 
     BoxLayout:
       orientation: "horizontal"

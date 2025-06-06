@@ -3,6 +3,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.image import Image
 from kivy.core.window import Window
 from kivy.clock import Clock
+from kivy.metrics import dp
 
 from kivy.properties import ListProperty
 
