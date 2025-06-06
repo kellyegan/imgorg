@@ -19,22 +19,19 @@ class ImportScreen(Screen):
 
         self.images_to_import = images
         unique, duplicates = find_duplicates(self.images_to_import)
-        self.unique_images = unique
-        self.duplicates = duplicates
 
-        print(f"{len(self.unique_images)} unique images")
-        for duplicate in self.duplicates:
+        print(f"{len(unique)} unique images in imports")
+        for duplicate in duplicates:
+            print("Duplicates:")
+            for duplicate_image in duplicates[duplicate]:
+                print(duplicate_image["path"])
+
+        not_in_catalog, duplicate_in_catalog, in_catalog_count = check_catalog_duplicate(unique)
+
+        print(f"{len(not_in_catalog)} imports not in catalog. ({in_catalog_count}) already in catalog")
+
+        for duplicate in duplicate_in_catalog:
             print("Duplicates:")
             for duplicate_image in self.duplicates[duplicate]:
                 print(duplicate_image["path"])
 
-
-
-    # unique, duplicates = find_duplicates(images)
-
-    # print(f"Unique images: {len(unique)}")
-
-    # for duplicate_group in duplicates.values():
-    #     print("Duplicates:")
-    #     for image in duplicate_group:
-    #         print(image["path"])
