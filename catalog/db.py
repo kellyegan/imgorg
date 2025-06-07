@@ -44,14 +44,13 @@ def is_duplicate(connection, image_details):
     existing_image = cur.fetchone()
 
     if existing_image:
-        return (image_details, existing_image)
+        return (existing_image, image_details)
     else:
         return None
     
 def find_catalog_duplicates(image_details_list):
     images = []
     duplicates = []
-    already_in_catalog = 0
 
     with get_connection(DB_NAME) as conn:
         conn.row_factory = sqlite3.Row
@@ -59,13 +58,12 @@ def find_catalog_duplicates(image_details_list):
             conflict = is_duplicate(conn, image_details)
             if conflict:
                 # If it is same image just ignore it
-                if image_details["filename"] != conflict[1]["filename"]:
+                if image_details["path"] != conflict[1]["path"]:
                     duplicates.append(conflict)
-                else:
-                    already_in_catalog += 1
             else:
                images.append(image_details)
-        return images, duplicates, already_in_catalog
+
+        return images, duplicates
 
 def add_image(connection, img_details, ignore_duplicate = False):
     cur = connection.cursor()

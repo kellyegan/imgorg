@@ -8,34 +8,32 @@ from kivy.metrics import dp
 from kivy.properties import ListProperty
 
 from catalog.db import get_all_images, add_image_list, find_catalog_duplicates  # You must have this function in catalog/db.py
-from catalog.image_importer import scan_for_images, find_duplicates
+from catalog.image_importer import scan_list_for_images, find_duplicates
 
 class ImportScreen(Screen):
     images_to_import = ListProperty([])
 
     def set_paths_to_import(self, paths):
-        images = []
-        for path in paths:
-            images += scan_for_images(path)
+        images = scan_list_for_images(paths)
+        unique, duplicates = find_duplicates(images)
+        not_in_catalog, duplicates_in_catalog = find_catalog_duplicates(unique)
 
-        self.images_to_import = images
-        unique, duplicates = find_duplicates(self.images_to_import)
+        self.images_to_import = not_in_catalog
 
-        print(f"{len(unique)} unique images in imports")
-        for duplicate in duplicates:
-            print("These images appear to be the same:")
-            for duplicate_image in duplicates[duplicate]:
-                print(duplicate_image["path"])
+        self.list_duplicates(duplicates)
+        self.list_catalog_duplicates(duplicates_in_catalog)
 
-        not_in_catalog, duplicate_in_catalog, in_catalog_count = find_catalog_duplicates(unique)
-
-        print(f"{len(not_in_catalog)} imports not in catalog. {in_catalog_count} already in catalog.")
-        print(f"{len(duplicate_in_catalog)} imports suspected duplicates.")
-
-        for duplicate in duplicate_in_catalog:
-            print("Duplicates:")
-            print(f"{duplicate[0]['filename']} matches {duplicate[1]['filename']}")
-
-    def list_duplicates():
+    def process_imports(self):
         pass
+
+    def list_duplicates(self, duplicates):
+        for duplicate in duplicates:
+            print("Duplicates:")
+            for image in duplicates[duplicate]:
+                print(f"\t{image["path"]}")
+
+    def list_catalog_duplicates(self, duplicates):
+        for duplicate in duplicates:
+            print(f"\tIn catalog: {duplicate[0]['path']}")
+            print(f"\tDuplicate: {duplicate[1]['path']}")
 
