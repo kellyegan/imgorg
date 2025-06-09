@@ -12,7 +12,8 @@
       halign: 'left'
       valign: 'top'
       font_size: "48sp"
-      size_hint_y: 0.2
+      size_hint_y: None
+      height: "60sp"
 
     BoxLayout:
       id: import_duplicates
@@ -21,35 +22,44 @@
       padding: dp(5)
 
       Label:
+        canvas.before:
+          Color:
+            rgba: (0, 1, 1, 1)
+          Rectangle:
+            pos: (self.pos[0], self.pos[1])
+            size: (self.size[0], self.size[1])
+
         text:"These images appear to be the same. Which do you want to import?"
         text_size: self.size
         halign: 'left'
         valign: 'top'
         font_size: "24sp"
+        size_hint_y: None
+        height: "36sp"
 
       BoxLayout:
         orientation: "horizontal"
+        size_hint_y: None
+        height: "60sp"
         
-        Button:
-          text: "Choice 1"
         Button:
           text: "Choice 1"
 
+        Button:
+          text: "Choice 2"
+  
       BoxLayout:
         orientation: "horizontal"
+        size_hint_y: None
+        height: "60sp"
         
-        Button:
-          text: "Choice 1"
         Button:
           text: "Choice 1"
 
-      BoxLayout:
-        orientation: "horizontal"
-        
         Button:
-          text: "Choice 1"
-        Button:
-          text: "Choice 1"
+          text: "Choice 2"
+
+      Label:
 
     BoxLayout:
       id: catalog_duplicates
@@ -58,19 +68,76 @@
       padding: dp(5)
 
       Label:
-        text: "These images are already in the catalog. Do you want to update the filepath?"
+        canvas.before:
+          Color:
+            rgba: (0, 1, 1, 1)
+          Rectangle:
+            pos: (self.pos[0], self.pos[1])
+            size: (self.size[0], self.size[1])
+
+        text:"These images are already in the catalog. Do you want to update the path?"
         text_size: self.size
         halign: 'left'
         valign: 'top'
         font_size: "24sp"
+        size_hint_y: None
+        height: "36sp"
+
+      BoxLayout:
+        orientation: "horizontal"
+        size_hint_y: None
+        height: "60sp"
+        
+        Button:
+          text: "Choice 1"
+
+        Button:
+          text: "Choice 2"
+  
+      BoxLayout:
+        orientation: "horizontal"
+        size_hint_y: None
+        height: "60sp"
+        
+        Button:
+          text: "Choice 1"
+
+        Button:
+          text: "Choice 2"
+
+      BoxLayout:
+        orientation: "horizontal"
+        size_hint_y: None
+        height: "60sp"
+        
+        Button:
+          text: "Choice 1"
+
+        Button:
+          text: "Choice 2"
+
+      Label:
 
     BoxLayout:
-      orientation: "horizontal"
-      size_hint_y: 0.2
+      id: import_status
+      orientation: "vertical"
       spacing: dp(10)
+      padding: dp(5)
+
+      Label:
+        text: "20 files ready to import."
+        font_size: "18sp"
+
+    BoxLayout:
+      id: submit_buttons
+      orientation: "horizontal"
+      spacing: dp(10)
+      size_hint_y: 0.2
 
       Button:
         text: "Cancel"
+        font_size: "24sp"
         on_release: app.view_thumbnail_browser()
       Button:
         text: "Import images"
+        font_size: "24sp"

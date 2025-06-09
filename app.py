@@ -45,6 +45,8 @@ class ImgOrgApp(App):
         self.image_list = get_all_images()
         self.active_index = 0
 
+        self.sm.current = "import"
+
         return self.sm
     
     def view_image_preview(self, index):
