@@ -1,10 +1,19 @@
+<FileToggle>:
+  text_size: self.size
+  halign: "left"
+  valign: "center"
+  size_hint_y: None
+  height: "48sp"
+  padding: "10sp"
+  group: root.hash
+  text: root.url
+
 <ImportScreen>:
   name: "import"
 
-  BoxLayout:
-    orientation: "vertical"
-    spacing: dp(25)
-    padding: dp(50)
+  GridLayout:
+    cols: 1
+    padding: dp(20)
 
     Label:
       text: "Import images"
@@ -15,129 +24,95 @@
       size_hint_y: None
       height: "60sp"
 
-    BoxLayout:
+    GridLayout:
       id: import_duplicates
-      orientation: "vertical"
-      spacing: dp(10)
-      padding: dp(5)
+      cols: 1
+      padding: dp(20)
 
       Label:
-        canvas.before:
-          Color:
-            rgba: (0, 1, 1, 1)
-          Rectangle:
-            pos: (self.pos[0], self.pos[1])
-            size: (self.size[0], self.size[1])
-
-        text:"These images appear to be the same. Which do you want to import?"
+        text: "Import duplicates"
         text_size: self.size
         halign: 'left'
         valign: 'top'
         font_size: "24sp"
         size_hint_y: None
-        height: "36sp"
-
-      BoxLayout:
-        orientation: "horizontal"
-        size_hint_y: None
         height: "60sp"
-        
-        Button:
-          text: "Choice 1"
 
-        Button:
-          text: "Choice 2"
-  
-      BoxLayout:
-        orientation: "horizontal"
-        size_hint_y: None
-        height: "60sp"
-        
-        Button:
-          text: "Choice 1"
+      GridLayout:
+        id: import_duplicates_list
+        cols: 1
+        padding: dp(20)
+        spacing: "10sp"
 
-        Button:
-          text: "Choice 2"
+        BoxLayout:
+          orientation: "horizontal"
+          spacing: "10sp"
+          padding: 0
 
-      Label:
+          FloatLayout:
+            size_hint_x: 0.2
+            size_hint_y: 1
+            height: self.width
 
-    BoxLayout:
+            Image:
+              fit_mode: "contain"
+              size_hint: (1, 1)
+              pos_hint: {"center_x": 0.5, "center_y": 0.5}
+              source: "/Users/kpegan/Desktop/Level_0/Level_1A/Level_2/46263009845_f00f4dc22c_o.jpg"
+
+          GridLayout:
+            cols: 1
+
+            FileToggle:
+              hash: "asd;lfkjasd;flkajsdf"
+              url: "/Users/kpegan/Desktop/Level_0/Level_1A/Level_2/46263009845_f00f4dc22c_o.jpg"
+
+            FileToggle:
+              hash: "asd;lfkjasd;flkajsdf"
+              url: "/Users/kpegan/Desktop/Level_0/Level_1B/46114644295_18eef4b685_o.jpg"
+
+            FileToggle:
+              hash: "asd;lfkjasd;flkajsdf"
+              url: "/Users/kpegan/Desktop/Level_0/39737483343_97c4be7232_o.jpg"
+
+            FileToggle:
+              hash: "asd;lfkjasd;flkajsdf"
+              url: "/Users/kpegan/Desktop/Level_0/Level_1A/Level_2/46263009845_f00f4dc22c_o.jpg"
+
+            FileToggle:
+              hash: "asd;lfkjasd;flkajsdf"
+              url: "/Users/kpegan/Desktop/Level_0/Level_1B/46114644295_18eef4b685_o.jpg"
+
+            FileToggle:
+              hash: "asd;lfkjasd;flkajsdf"
+              url: "/Users/kpegan/Desktop/Level_0/39737483343_97c4be7232_o.jpg"
+
+
+    GridLayout:
       id: catalog_duplicates
-      orientation: "vertical"
-      spacing: dp(10)
-      padding: dp(5)
+      cols: 1
+      padding: dp(20)
 
       Label:
-        canvas.before:
-          Color:
-            rgba: (0, 1, 1, 1)
-          Rectangle:
-            pos: (self.pos[0], self.pos[1])
-            size: (self.size[0], self.size[1])
-
-        text:"These images are already in the catalog. Do you want to update the path?"
+        text: "Catalog duplicates"
         text_size: self.size
         halign: 'left'
         valign: 'top'
         font_size: "24sp"
         size_hint_y: None
-        height: "36sp"
-
-      BoxLayout:
-        orientation: "horizontal"
-        size_hint_y: None
         height: "60sp"
-        
-        Button:
-          text: "Choice 1"
-
-        Button:
-          text: "Choice 2"
-  
-      BoxLayout:
-        orientation: "horizontal"
-        size_hint_y: None
-        height: "60sp"
-        
-        Button:
-          text: "Choice 1"
-
-        Button:
-          text: "Choice 2"
-
-      BoxLayout:
-        orientation: "horizontal"
-        size_hint_y: None
-        height: "60sp"
-        
-        Button:
-          text: "Choice 1"
-
-        Button:
-          text: "Choice 2"
-
-      Label:
-
-    BoxLayout:
-      id: import_status
-      orientation: "vertical"
-      spacing: dp(10)
-      padding: dp(5)
-
-      Label:
-        text: "20 files ready to import."
-        font_size: "18sp"
 
     BoxLayout:
       id: submit_buttons
-      orientation: "horizontal"
-      spacing: dp(10)
-      size_hint_y: 0.2
+      orientation: 'horizontal'
+      size_hint_y: 0.15
+      spacing: "10sp"
 
       Button:
         text: "Cancel"
-        font_size: "24sp"
-        on_release: app.view_thumbnail_browser()
+
       Button:
-        text: "Import images"
-        font_size: "24sp"
+        text: "Import"
+
+
+  
