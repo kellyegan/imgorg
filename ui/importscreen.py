@@ -12,6 +12,8 @@ from catalog.image_importer import scan_list_for_images, find_duplicates
 
 class ImportScreen(Screen):
     images_to_import = ListProperty([])
+    duplicate_imports = ListProperty([])
+    catalog_duplicates = ListProperty([])
 
     def set_paths_to_import(self, paths):
         images = scan_list_for_images(paths)
@@ -19,9 +21,8 @@ class ImportScreen(Screen):
         not_in_catalog, duplicates_in_catalog = find_catalog_duplicates(unique)
 
         self.images_to_import = not_in_catalog
-
-        self.list_duplicates(duplicates)
-        self.list_catalog_duplicates(duplicates_in_catalog)
+        self.duplicate_imports = duplicates
+        self.catalog_duplicates = duplicates_in_catalog
 
     def process_imports(self):
         pass
@@ -36,4 +37,3 @@ class ImportScreen(Screen):
         for duplicate in duplicates:
             print(f"\tIn catalog: {duplicate[0]['path']}")
             print(f"\tDuplicate: {duplicate[1]['path']}")
-
