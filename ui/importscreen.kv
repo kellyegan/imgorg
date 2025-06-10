@@ -3,7 +3,7 @@
     halign: "left"
     valign: "center"
     size_hint_y: None
-    height: "30sp"
+    height: dp(30)
     padding: "10sp"
     group: root.hash
     text: root.path
@@ -12,7 +12,8 @@
     orientation: 'horizontal'
     padding: 0
     spacing: dp(10)
-    height: self.height
+    size_hint_y: None
+    height: dp(100)
 
     AnchorLayout:
         size_hint_x: 0.15
@@ -43,8 +44,8 @@
 
     GridLayout:
         cols: 1
-        padding: "24sp"
-        spacing: "12sp"
+        padding: dp(24)
+        spacing: dp(12)
 
         Label:
             text: "Import images"
@@ -55,57 +56,115 @@
             size_hint_y: None
             height: "60sp"
 
-        GridLayout:
-            id: import_duplicates
-            cols: 1
-            
-            Label:
-                text: "Import duplicates"
-                text_size: self.size
-                halign: 'left'
-                valign: 'top'
-                font_size: "24sp"
+        Label:
+            text: "Import duplicates"
+            text_size: self.size
+            halign: 'left'
+            valign: 'bottom'
+            font_size: "24sp"
+            size_hint_y: None
+            height: "36sp"
+
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+
+            GridLayout:
+                id: import_duplicates
+                cols: 1
                 size_hint_y: None
-                height: "48sp"
+                height: self.minimum_height
+                spacing: dp(12)
 
-            ImageChooser:
-                hash: "banana" 
-                image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
+                ImageChooser:
+                    hash: "group-1" 
+                    image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
 
-            ImageChooser:
-                hash: "apple" 
-                image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
+                ImageChooser:
+                    hash: "group-2" 
+                    image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
 
-            ImageChooser:
-                hash: "grape" 
-                image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
+                ImageChooser:
+                    hash: "group-3" 
+                    image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
+
+                ImageChooser:
+                    hash: "group-1" 
+                    image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
+
+                ImageChooser:
+                    hash: "group-2" 
+                    image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
+
+                ImageChooser:
+                    hash: "group-3" 
+                    image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
 
 
-        GridLayout:
-            id: catalog_duplicates
-            cols: 1
-            
-            Label:
-                text: "Catalog duplicates"
-                text_size: self.size
-                halign: 'left'
-                valign: 'top'
-                font_size: "24sp"
+        Label:
+            text: "Catalog duplicates"
+            text_size: self.size
+            halign: 'left'
+            valign: 'bottom'
+            font_size: "24sp"
+            size_hint_y: None
+            height: "36sp"
+
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+
+            GridLayout:
+                id: catalog_duplicates_duplicates
+                cols: 1
                 size_hint_y: None
-                height: "48sp"
+                height: self.minimum_height
+                spacing: dp(12)
+            
+                ImageChooser:
+                    hash: "group-1" 
+                    image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
 
-            ScrollView:
-                GridLayout:
+                ImageChooser:
+                    hash: "group-2" 
+                    image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
+
+                ImageChooser:
+                    hash: "group-3" 
+                    image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
+
+                ImageChooser:
+                    hash: "group-1" 
+                    image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
+
+                ImageChooser:
+                    hash: "group-2" 
+                    image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
+
+                ImageChooser:
+                    hash: "group-3" 
+                    image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
 
         BoxLayout:
             id: submit_buttons
             orientation: 'horizontal'
-            size_hint_y: 0.15
+            size_hint_y: None
+            height: dp(48)
             spacing: "10sp"
 
             Button:
                 text: "Cancel"
+                font_size: "18sp"
+                bold: True
+                color: (1, 0, 0, 1)
+                background_normal: ""
+                background_color: (0.3, 0.3, 0.3, 1)
                 on_release: app.view_thumbnail_browser()
 
             Button:
-                text: "Import"  
+                text: "Import"
+                font_size: "18sp"
+                bold: True
+                color: (0, 0.6, 0.8, 1)
+                background_normal: ""
+                background_color: (0.3, 0.3, 0.3, 1)
