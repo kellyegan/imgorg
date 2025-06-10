@@ -24,7 +24,7 @@
 
         Image:
             id: preview_image
-            source: root.image_list[0]["path"] if len(root.image_list) > 0 else ""
+            source: root.image_list[0]["path"] if len(root.image_list) > 0 else "ui/images/image_missing.png"
             size_hint: None, None
             width: self.parent.width
             height: min(self.parent.width / self.image_ratio, dp(100))
