@@ -1,118 +1,149 @@
 <FileToggle>:
-  text_size: self.size
-  halign: "left"
-  valign: "center"
-  size_hint_y: None
-  height: "48sp"
-  padding: "10sp"
-  group: root.hash
-  text: root.url
+    text_size: self.size
+    halign: "left"
+    valign: "center"
+    size_hint_y: None
+    height: "36sp"
+    padding: "10sp"
+    group: root.hash
+    text: root.url
 
 <ImportScreen>:
-  name: "import"
-
-  GridLayout:
-    cols: 1
-    padding: dp(20)
-
-    Label:
-      text: "Import images"
-      text_size: self.size
-      halign: 'left'
-      valign: 'top'
-      font_size: "48sp"
-      size_hint_y: None
-      height: "60sp"
+    name: "import"
 
     GridLayout:
-      id: import_duplicates
-      cols: 1
-      padding: dp(20)
-
-      Label:
-        text: "Import duplicates"
-        text_size: self.size
-        halign: 'left'
-        valign: 'top'
-        font_size: "24sp"
-        size_hint_y: None
-        height: "60sp"
-
-      GridLayout:
-        id: import_duplicates_list
         cols: 1
-        padding: dp(20)
-        spacing: "10sp"
+        padding: "24sp"
+        spacing: "12sp"
+
+        Label:
+            text: "Import images"
+            text_size: self.size
+            halign: 'left'
+            valign: 'top' 
+            font_size: "48sp"
+            size_hint_y: None
+            height: "60sp"
+
+        GridLayout:
+            id: import_duplicates
+            cols: 1
+            
+            Label:
+                text: "Import duplicates"
+                text_size: self.size
+                halign: 'left'
+                valign: 'top'
+                font_size: "24sp"
+                size_hint_y: None
+                height: "48sp"
+
+            BoxLayout:
+                orientation: 'horizontal'
+                padding: 0
+                spacing: dp(10)
+                height: self.height
+
+                # Left: Image (25% width), top-aligned
+                AnchorLayout:
+                    size_hint_x: 0.15
+                    anchor_y: "top"
+                    padding: 0
+                    spacing: 0
+
+                    Image:
+                        id: preview_image
+                        source: '/Users/kpe/Desktop/Level_0/Level_1A/52892276890_67b6d4a0bf_o.jpg'
+                        size_hint: None, None
+                        width: self.parent.width
+                        height: self.parent.width/self.image_ratio
+                        fit_mode: "contain"
+                    
+                    Widget:  # spacer to push image to the top
+
+                # Right: ToggleButtons stacked vertically (75%)
+                GridLayout:
+                    cols: 1
+                    size_hint_x: 0.85
+                    spacing: dp(5)
+                    padding: 0
+
+                    FileToggle:
+                        url: "Option 1"
+                        hash: "options"
+                    FileToggle:
+                        url: "Option 2"
+                        hash: "options"
+                    FileToggle:
+                        url: "Option 3"
+                        hash: "options"
+
+
+            BoxLayout:
+                orientation: 'horizontal'
+                padding: 0
+                spacing: dp(10)
+                height: self.height
+
+                # Left: Image (25% width), top-aligned
+                AnchorLayout:
+                    size_hint_x: 0.15
+                    anchor_y: "top"
+                    padding: 0
+                    spacing: 0
+
+                    Image:
+                        id: preview_image
+                        source: '/Users/kpe/Desktop/Level_0/Level_1A/47249802321_9439276c96_o.jpg'
+                        size_hint: None, None
+                        width: self.parent.width
+                        height: min(self.parent.width/self.image_ratio, dp(150))
+                        fit_mode: "contain"
+                    
+                    Widget:  # spacer to push image to the top
+
+                # Right: ToggleButtons stacked vertically (75%)
+                GridLayout:
+                    cols: 1
+                    size_hint_x: 0.85
+                    spacing: dp(5)
+                    padding: 0
+
+                    FileToggle:
+                        url: "Option 1"
+                        hash: "options"
+                    FileToggle:
+                        url: "Option 2"
+                        hash: "options"
+                    FileToggle:
+                        url: "Option 3"
+                        hash: "options"
+
+        GridLayout:
+            id: catalog_duplicates
+            cols: 1
+            
+            Label:
+                text: "Catalog duplicates"
+                text_size: self.size
+                halign: 'left'
+                valign: 'top'
+                font_size: "24sp"
+                size_hint_y: None
+                height: "48sp"
+
+            ScrollView:
+                GridLayout:
 
         BoxLayout:
-          orientation: "horizontal"
-          spacing: "10sp"
-          padding: 0
+            id: submit_buttons
+            orientation: 'horizontal'
+            size_hint_y: 0.15
+            spacing: "10sp"
 
-          FloatLayout:
-            size_hint_x: 0.2
-            size_hint_y: 1
-            height: self.width
+            Button:
+                text: "Cancel"
+                on_release: app.view_thumbnail_browser()
 
-            Image:
-              fit_mode: "contain"
-              size_hint: (1, 1)
-              pos_hint: {"center_x": 0.5, "center_y": 0.5}
-              source: "/Users/kpegan/Desktop/Level_0/Level_1A/Level_2/46263009845_f00f4dc22c_o.jpg"
-
-          GridLayout:
-            cols: 1
-
-            FileToggle:
-              hash: "asd;lfkjasd;flkajsdf"
-              url: "/Users/kpegan/Desktop/Level_0/Level_1A/Level_2/46263009845_f00f4dc22c_o.jpg"
-
-            FileToggle:
-              hash: "asd;lfkjasd;flkajsdf"
-              url: "/Users/kpegan/Desktop/Level_0/Level_1B/46114644295_18eef4b685_o.jpg"
-
-            FileToggle:
-              hash: "asd;lfkjasd;flkajsdf"
-              url: "/Users/kpegan/Desktop/Level_0/39737483343_97c4be7232_o.jpg"
-
-            FileToggle:
-              hash: "asd;lfkjasd;flkajsdf"
-              url: "/Users/kpegan/Desktop/Level_0/Level_1A/Level_2/46263009845_f00f4dc22c_o.jpg"
-
-            FileToggle:
-              hash: "asd;lfkjasd;flkajsdf"
-              url: "/Users/kpegan/Desktop/Level_0/Level_1B/46114644295_18eef4b685_o.jpg"
-
-            FileToggle:
-              hash: "asd;lfkjasd;flkajsdf"
-              url: "/Users/kpegan/Desktop/Level_0/39737483343_97c4be7232_o.jpg"
-
-
-    GridLayout:
-      id: catalog_duplicates
-      cols: 1
-      padding: dp(20)
-
-      Label:
-        text: "Catalog duplicates"
-        text_size: self.size
-        halign: 'left'
-        valign: 'top'
-        font_size: "24sp"
-        size_hint_y: None
-        height: "60sp"
-
-    BoxLayout:
-      id: submit_buttons
-      orientation: 'horizontal'
-      size_hint_y: 0.15
-      spacing: "10sp"
-
-      Button:
-        text: "Cancel"
-
-      Button:
-        text: "Import"
-
-
-  
+            Button:
+                text: "Import"  
