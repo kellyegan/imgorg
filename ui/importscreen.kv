@@ -13,10 +13,11 @@
     padding: 0
     spacing: dp(10)
     size_hint_y: None
-    height: dp(100)
+    heigth: self.minimum_height
 
     AnchorLayout:
-        size_hint_x: 0.15
+        size_hint_x: None
+        width: dp(100)
         anchor_y: "top"
         padding: 0
         spacing: 0
@@ -26,7 +27,7 @@
             source: root.image_list[0]["path"] if len(root.image_list) > 0 else ""
             size_hint: None, None
             width: self.parent.width
-            height: min(self.parent.width / self.image_ratio, dp(150))
+            height: min(self.parent.width / self.image_ratio, dp(100))
             fit_mode: "contain"
 
         Widget:
@@ -35,7 +36,8 @@
     GridLayout:
         id: image_list
         cols: 1
-        size_hint_x: 0.85
+        size_hint_y: None
+        heigth: self.minimum_height
         spacing: dp(2)
         padding: 0
 
@@ -44,7 +46,7 @@
     spacing: dp(12)
 
     Label:
-        text: "Import duplicates"
+        text: root.title
         text_size: self.size
         halign: 'left'
         valign: 'top' 
@@ -57,7 +59,7 @@
         do_scroll_y: True
 
         GridLayout:
-            id: import_duplicates
+            id: duplicates_list
             cols: 1
             size_hint_y: None
             height: self.minimum_height
@@ -65,7 +67,7 @@
 
             ImageChooser:
                 hash: "group-1" 
-                image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
+                image_list: [{"path": "ui/images/image_missing.png"}, {"path": "B"}, {"path": "C"}]
 
             ImageChooser:
                 hash: "group-2" 
@@ -73,7 +75,7 @@
 
             ImageChooser:
                 hash: "group-3" 
-                image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
+                image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}, {"path": "D"}]
 
             ImageChooser:
                 hash: "group-1" 
@@ -93,7 +95,7 @@
 
     GridLayout:
         cols: 1
-        padding: dp(24)
+        padding: [dp(48), dp(24)]
         spacing: dp(18)
 
         Label:
@@ -106,8 +108,10 @@
             height: "60sp"
 
         DuplicatesList:
+            title: "Duplicate imports"
 
         DuplicatesList:
+            title: "Images already in catalog"
 
         BoxLayout:
             id: submit_buttons

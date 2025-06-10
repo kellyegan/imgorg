@@ -31,7 +31,18 @@ class ImageChooser(BoxLayout):
             self.ids.image_list.add_widget(toggle)
 
 class DuplicatesList(GridLayout):
-    pass
+    title = StringProperty("Duplicates")
+    duplicates_list = ListProperty([])
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.bind(duplicates_list=self._update_duplicates_list)
+
+    def _update_duplicates_list(self, instance, value):
+        self.ids.duplicates_list.clear_widgets()
+        for item in value:
+            image_chooser = ImageChooser()
+            self.ids.image_list.add_widget(image_chooser)
 
 class ImportScreen(Screen):
     images_to_import = ListProperty([])
