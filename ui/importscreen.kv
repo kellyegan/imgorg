@@ -39,13 +39,62 @@
         spacing: dp(2)
         padding: 0
 
+<DuplicatesList>:
+    cols: 1
+    spacing: dp(12)
+
+    Label:
+        text: "Import duplicates"
+        text_size: self.size
+        halign: 'left'
+        valign: 'top' 
+        font_size: "24sp"
+        size_hint_y: None
+        height: "30sp"
+
+    ScrollView:
+        do_scroll_x: False
+        do_scroll_y: True
+
+        GridLayout:
+            id: import_duplicates
+            cols: 1
+            size_hint_y: None
+            height: self.minimum_height
+            spacing: dp(12)
+
+            ImageChooser:
+                hash: "group-1" 
+                image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
+
+            ImageChooser:
+                hash: "group-2" 
+                image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
+
+            ImageChooser:
+                hash: "group-3" 
+                image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
+
+            ImageChooser:
+                hash: "group-1" 
+                image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
+
+            ImageChooser:
+                hash: "group-2" 
+                image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
+
+            ImageChooser:
+                hash: "group-3" 
+                image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
+
+
 <ImportScreen>:
     name: "import"
 
     GridLayout:
         cols: 1
         padding: dp(24)
-        spacing: dp(12)
+        spacing: dp(18)
 
         Label:
             text: "Import images"
@@ -56,94 +105,9 @@
             size_hint_y: None
             height: "60sp"
 
-        Label:
-            text: "Import duplicates"
-            text_size: self.size
-            halign: 'left'
-            valign: 'bottom'
-            font_size: "24sp"
-            size_hint_y: None
-            height: "36sp"
+        DuplicatesList:
 
-        ScrollView:
-            do_scroll_x: False
-            do_scroll_y: True
-
-            GridLayout:
-                id: import_duplicates
-                cols: 1
-                size_hint_y: None
-                height: self.minimum_height
-                spacing: dp(12)
-
-                ImageChooser:
-                    hash: "group-1" 
-                    image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
-
-                ImageChooser:
-                    hash: "group-2" 
-                    image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
-
-                ImageChooser:
-                    hash: "group-3" 
-                    image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
-
-                ImageChooser:
-                    hash: "group-1" 
-                    image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
-
-                ImageChooser:
-                    hash: "group-2" 
-                    image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
-
-                ImageChooser:
-                    hash: "group-3" 
-                    image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
-
-
-        Label:
-            text: "Catalog duplicates"
-            text_size: self.size
-            halign: 'left'
-            valign: 'bottom'
-            font_size: "24sp"
-            size_hint_y: None
-            height: "36sp"
-
-        ScrollView:
-            do_scroll_x: False
-            do_scroll_y: True
-
-            GridLayout:
-                id: catalog_duplicates_duplicates
-                cols: 1
-                size_hint_y: None
-                height: self.minimum_height
-                spacing: dp(12)
-            
-                ImageChooser:
-                    hash: "group-1" 
-                    image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
-
-                ImageChooser:
-                    hash: "group-2" 
-                    image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
-
-                ImageChooser:
-                    hash: "group-3" 
-                    image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
-
-                ImageChooser:
-                    hash: "group-1" 
-                    image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
-
-                ImageChooser:
-                    hash: "group-2" 
-                    image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
-
-                ImageChooser:
-                    hash: "group-3" 
-                    image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
+        DuplicatesList:
 
         BoxLayout:
             id: submit_buttons

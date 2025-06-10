@@ -2,7 +2,7 @@ from kivy.app import App
 from kivy.uix.screenmanager import Screen
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.image import Image
+from kivy.uix.gridlayout import GridLayout
 from kivy.core.window import Window
 from kivy.clock import Clock
 from kivy.metrics import dp
@@ -29,6 +29,9 @@ class ImageChooser(BoxLayout):
         for item in value:
             toggle = FileToggle(path=item["path"], hash=self.hash)
             self.ids.image_list.add_widget(toggle)
+
+class DuplicatesList(GridLayout):
+    pass
 
 class ImportScreen(Screen):
     images_to_import = ListProperty([])
