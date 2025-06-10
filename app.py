@@ -32,7 +32,6 @@ class ImgOrgApp(App):
         Builder.load_file("ui/importscreen.kv")
 
         Window.bind(on_drop_file=self.on_drop_file)
-
         
         Window.size = (1024, 1024)
         Window.top = 50

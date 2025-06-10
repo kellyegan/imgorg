@@ -1,6 +1,7 @@
 from kivy.app import App
 from kivy.uix.screenmanager import Screen
 from kivy.uix.togglebutton import ToggleButton
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import Image
 from kivy.core.window import Window
 from kivy.clock import Clock
@@ -11,10 +12,23 @@ from kivy.properties import ListProperty, StringProperty
 from catalog.db import get_all_images, add_image_list, find_catalog_duplicates  # You must have this function in catalog/db.py
 from catalog.image_importer import scan_list_for_images, find_duplicates
 
-
 class FileToggle(ToggleButton):
-    url = StringProperty("")
+    path = StringProperty("")
     hash = StringProperty("group")
+
+class ImageChooser(BoxLayout):
+    image_list = ListProperty()
+    hash = StringProperty("A")
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.bind(image_list=self._update_image_list)
+
+    def _update_image_list(self, instance, value):
+        self.ids.image_list.clear_widgets()
+        for item in value:
+            toggle = FileToggle(path=item["path"], hash=self.hash)
+            self.ids.image_list.add_widget(toggle)
 
 class ImportScreen(Screen):
     images_to_import = ListProperty([])

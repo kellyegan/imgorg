@@ -3,10 +3,40 @@
     halign: "left"
     valign: "center"
     size_hint_y: None
-    height: "36sp"
+    height: "30sp"
     padding: "10sp"
     group: root.hash
-    text: root.url
+    text: root.path
+
+<ImageChooser>:
+    orientation: 'horizontal'
+    padding: 0
+    spacing: dp(10)
+    height: self.height
+
+    AnchorLayout:
+        size_hint_x: 0.15
+        anchor_y: "top"
+        padding: 0
+        spacing: 0
+
+        Image:
+            id: preview_image
+            source: root.image_list[0]["path"] if len(root.image_list) > 0 else ""
+            size_hint: None, None
+            width: self.parent.width
+            height: min(self.parent.width / self.image_ratio, dp(150))
+            fit_mode: "contain"
+
+        Widget:
+        
+    # Toggles for each image are added as children of this grid layout
+    GridLayout:
+        id: image_list
+        cols: 1
+        size_hint_x: 0.85
+        spacing: dp(2)
+        padding: 0
 
 <ImportScreen>:
     name: "import"
@@ -38,86 +68,18 @@
                 size_hint_y: None
                 height: "48sp"
 
-            BoxLayout:
-                orientation: 'horizontal'
-                padding: 0
-                spacing: dp(10)
-                height: self.height
+            ImageChooser:
+                hash: "banana" 
+                image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
 
-                # Left: Image (25% width), top-aligned
-                AnchorLayout:
-                    size_hint_x: 0.15
-                    anchor_y: "top"
-                    padding: 0
-                    spacing: 0
+            ImageChooser:
+                hash: "apple" 
+                image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
 
-                    Image:
-                        id: preview_image
-                        source: '/Users/kpe/Desktop/Level_0/Level_1A/52892276890_67b6d4a0bf_o.jpg'
-                        size_hint: None, None
-                        width: self.parent.width
-                        height: self.parent.width/self.image_ratio
-                        fit_mode: "contain"
-                    
-                    Widget:  # spacer to push image to the top
+            ImageChooser:
+                hash: "grape" 
+                image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
 
-                # Right: ToggleButtons stacked vertically (75%)
-                GridLayout:
-                    cols: 1
-                    size_hint_x: 0.85
-                    spacing: dp(5)
-                    padding: 0
-
-                    FileToggle:
-                        url: "Option 1"
-                        hash: "options"
-                    FileToggle:
-                        url: "Option 2"
-                        hash: "options"
-                    FileToggle:
-                        url: "Option 3"
-                        hash: "options"
-
-
-            BoxLayout:
-                orientation: 'horizontal'
-                padding: 0
-                spacing: dp(10)
-                height: self.height
-
-                # Left: Image (25% width), top-aligned
-                AnchorLayout:
-                    size_hint_x: 0.15
-                    anchor_y: "top"
-                    padding: 0
-                    spacing: 0
-
-                    Image:
-                        id: preview_image
-                        source: '/Users/kpe/Desktop/Level_0/Level_1A/47249802321_9439276c96_o.jpg'
-                        size_hint: None, None
-                        width: self.parent.width
-                        height: min(self.parent.width/self.image_ratio, dp(150))
-                        fit_mode: "contain"
-                    
-                    Widget:  # spacer to push image to the top
-
-                # Right: ToggleButtons stacked vertically (75%)
-                GridLayout:
-                    cols: 1
-                    size_hint_x: 0.85
-                    spacing: dp(5)
-                    padding: 0
-
-                    FileToggle:
-                        url: "Option 1"
-                        hash: "options"
-                    FileToggle:
-                        url: "Option 2"
-                        hash: "options"
-                    FileToggle:
-                        url: "Option 3"
-                        hash: "options"
 
         GridLayout:
             id: catalog_duplicates
