@@ -78,14 +78,12 @@ class ImgOrgApp(App):
         self.drop_buffer = []
         self._drop_timer = None
 
-        self.process_imports(paths)
-
-    def process_imports(self, paths):
+        # Setup import screen
         import_screen = self.root.get_screen("import")
         import_screen.set_paths_to_import(paths)
 
         self.view_import_screen()
-
+        
     def set_active(self, index):
         if index < 0 or index >= len(self.image_list):
             return
