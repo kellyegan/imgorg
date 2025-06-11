@@ -36,9 +36,9 @@ class ImageChooser(BoxLayout):
     def get_thumbnail(self):
         if len(self.image_list) <= 0:
             return ""
-        if os.path.exists(self.image_list[0]["path"]):
-            return self.image_list[0]["path"]
-        return ""
+        if not os.path.exists(self.image_list[0]["path"]):
+            return ""
+        return self.image_list[0]["path"]
 
 class DuplicatesList(GridLayout):
     title = StringProperty("Duplicates")
@@ -50,9 +50,12 @@ class DuplicatesList(GridLayout):
 
     def _update_duplicates_list(self, instance, value):
         self.ids.duplicates_list.clear_widgets()
+        count = 0
         for item in value:
-            image_chooser = ImageChooser()
-            self.ids.image_list.add_widget(image_chooser)
+            image_chooser = ImageChooser(hash=item["hash"], image_list=item["image_list"])
+            self.ids.duplicates_list.add_widget(image_chooser)
+            count += 1
+        print(count)
 
 class ImportScreen(Screen):
     images_to_import = ListProperty([])
