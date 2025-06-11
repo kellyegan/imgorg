@@ -25,11 +25,15 @@ class ImageChooser(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.bind(image_list=self._update_image_list)
+        self.update_image_list(self.image_list)
 
     def _update_image_list(self, instance, value):
+        self.update_image_list(value)
+
+    def update_image_list(self, image_list):
         self.ids.image_list.clear_widgets()
-        for item in value:
-            toggle = FileToggle(path=item["path"], hash=self.hash)
+        for image in image_list:
+            toggle = FileToggle(path=image["path"], hash=self.hash)
             self.ids.image_list.add_widget(toggle)
         self.ids.image_thumb.source = self.get_thumbnail()
 
