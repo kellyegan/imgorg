@@ -1,45 +1,49 @@
 <FileToggle>:
+    text: root.path
+    group: root.hash
+    size_hint: 1, None
+    height: dp(30)
     text_size: self.size
     halign: "left"
     valign: "center"
-    size_hint_y: None
-    height: dp(30)
-    padding: "10sp"
-    group: root.hash
-    text: root.path
+    padding: (dp(12), 0)
 
 <ImageChooser>:
-    orientation: 'horizontal'
-    padding: 0
-    spacing: dp(10)
-    size_hint_y: None
-    heigth: self.minimum_height
+    orientation: "horizontal"
+    size_hint: (1, None)
+    height: max(image_thumb.height, image_list.height)
+    spacing: dp(18)
 
     AnchorLayout:
-        size_hint_x: None
+        size_hint: None, 1
         width: dp(100)
         anchor_y: "top"
-        padding: 0
-        spacing: 0
 
         Image:
-            id: preview_image
-            source: root.image_list[0]["path"] if len(root.image_list) > 0 else "ui/images/image_missing.png"
+            id: image_thumb
+            # source: "/Users/kpe/Desktop/Level_0/14305059168_6f889b3b49_o.jpg" # VERTICAL
+            # source: "/Users/kpe/Desktop/Level_0/8663892916_f048be298f_o.jpg" # HORIZONTAL
+            source: root.get_thumbnail()
             size_hint: None, None
             width: self.parent.width
-            height: min(self.parent.width / self.image_ratio, dp(100))
-            fit_mode: "contain"
+            height: self.parent.width / self.image_ratio
 
-        Widget:
-        
-    # Toggles for each image are added as children of this grid layout
-    GridLayout:
-        id: image_list
-        cols: 1
-        size_hint_y: None
-        heigth: self.minimum_height
-        spacing: dp(2)
-        padding: 0
+    AnchorLayout:
+        anchor_y: "top"
+
+        GridLayout:
+            id: image_list
+            cols: 1
+            size_hint: (1, None)
+            height: self.minimum_height
+            spacing: dp(4)
+
+            FileToggle:
+                path: "/Users/kpe/Desktop/Level_0/8663892916_f048be298f_o.jpg"
+                hash: root.hash
+            FileToggle:
+                path: "/Users/kpe/Desktop/Level_0/14305059168_6f889b3b49_o.jpg"
+                hash: root.hash
 
 <DuplicatesList>:
     cols: 1
@@ -48,11 +52,11 @@
     Label:
         text: root.title
         text_size: self.size
-        halign: 'left'
-        valign: 'top' 
-        font_size: "24sp"
-        size_hint_y: None
-        height: "30sp"
+        halign: "left"
+        valign: "center"
+        font_size: dp(24)
+        size_hint: (1, None)
+        height: dp(30)
 
     ScrollView:
         do_scroll_x: False
@@ -61,33 +65,19 @@
         GridLayout:
             id: duplicates_list
             cols: 1
-            size_hint_y: None
+            spacing: dp(18)
+            size_hint: (1, None)
             height: self.minimum_height
-            spacing: dp(12)
 
             ImageChooser:
-                hash: "group-1" 
-                image_list: [{"path": "ui/images/image_missing.png"}, {"path": "B"}, {"path": "C"}]
-
+                hash: "group-1"
+                image_list: [{"path":"/Users/kpe/Desktop/Level_0/8663892916_f048be298f_o.jpg"}, {"path": "/Users/kpe/Desktop/Level_0/14305059168_6f889b3b49_o.jpg"},{"path":"/Users/kpe/Desktop/Level_0/39737483343_97c4be7232_o.jpg"}]
             ImageChooser:
-                hash: "group-2" 
-                image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
-
-            ImageChooser:
-                hash: "group-3" 
-                image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}, {"path": "D"}]
-
-            ImageChooser:
-                hash: "group-1" 
-                image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
-
-            ImageChooser:
-                hash: "group-2" 
-                image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
-
-            ImageChooser:
-                hash: "group-3" 
-                image_list: [{"path": "/Users/kpegan/Desktop/Level_0/52019144128_f82c5b190d_o.jpg"}, {"path": "B"}, {"path": "C"}]
+                hash: "group-2"
+                image_list: [{"path": "/Users/kpe/Desktop/Level_0/14305059168_6f889b3b49_o.jpg"}, {"path":"/Users/kpe/Desktop/Level_0/8663892916_f048be298f_o.jpg"}]
+            ImageChooser: 
+                hash: "group-3"
+                image_list: [{"path": "/Users/kpe/Desktop/Level_0/39737483343_97c4be7232_o.jpg"}, {"path":"/Users/kpe/Desktop/Level_0/8663892916_f048be298f_o.jpg"}]
 
 
 <ImportScreen>:

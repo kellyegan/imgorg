@@ -7,6 +7,8 @@ from kivy.core.window import Window
 from kivy.clock import Clock
 from kivy.metrics import dp
 
+import os
+
 from kivy.properties import ListProperty, StringProperty
 
 from catalog.db import get_all_images, add_image_list, find_catalog_duplicates  # You must have this function in catalog/db.py
@@ -29,6 +31,14 @@ class ImageChooser(BoxLayout):
         for item in value:
             toggle = FileToggle(path=item["path"], hash=self.hash)
             self.ids.image_list.add_widget(toggle)
+        self.ids.image_thumb.source = self.get_thumbnail()
+
+    def get_thumbnail(self):
+        if len(self.image_list) <= 0:
+            return ""
+        if os.path.exists(self.image_list[0]["path"]):
+            return self.image_list[0]["path"]
+        return ""
 
 class DuplicatesList(GridLayout):
     title = StringProperty("Duplicates")
