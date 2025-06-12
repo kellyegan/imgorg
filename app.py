@@ -31,7 +31,7 @@ class ImgOrgApp(App):
         Builder.load_file("ui/imagepreviewscreen.kv")
         Builder.load_file("ui/importscreen.kv")
 
-        Window.bind(on_drop_file=self.on_drop_file)
+        Window.bind(on_drop_file=self._on_drop_file)
         
         Window.size = (1024, 1024)
         Window.top = 50
@@ -62,7 +62,7 @@ class ImgOrgApp(App):
         self.sm.transition.direction = 'left'
         self.sm.current = "import"
 
-    def on_drop_file(self, window, filepath, x, y):
+    def _on_drop_file(self, window, filepath, x, y):
         path_string = filepath.decode('utf-8')
 
         self.drop_buffer.append(path_string)
@@ -74,13 +74,12 @@ class ImgOrgApp(App):
         self._drop_timer = Clock.schedule_once(self._handle_drop_buffer, 0.1)
 
     def _handle_drop_buffer(self, dt):
-        paths = self.drop_buffer
-        self.drop_buffer = []
-        self._drop_timer = None
-
         # Setup import screen
         import_screen = self.root.get_screen("import")
-        import_screen.set_paths_to_import(paths)
+        import_screen.process_import_paths(self.drop_buffer)
+
+        self.drop_buffer = []
+        self._drop_timer = None
 
         self.view_import_screen()
         
