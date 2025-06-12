@@ -24,10 +24,10 @@ class ImageChooser(BoxLayout):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.bind(image_list=self._update_image_list)
+        self.bind(image_list=self._on_update_image_list)
         self.update_image_list(self.image_list)
 
-    def _update_image_list(self, instance, value):
+    def _on_update_image_list(self, instance, value):
         self.update_image_list(value)
 
     def update_image_list(self, image_list):
@@ -50,21 +50,25 @@ class DuplicatesList(GridLayout):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.bind(duplicates_list=self._update_duplicates_list)
+        self.bind(duplicates_list=self._on_update_duplicate_list)
 
-    def _update_duplicates_list(self, instance, value):
+    def _on_update_duplicate_list(self, instance, value):
         self.ids.duplicates_list.clear_widgets()
-        count = 0
+
         for item in value:
             image_chooser = ImageChooser(hash=item["hash"], image_list=item["image_list"])
             self.ids.duplicates_list.add_widget(image_chooser)
-            count += 1
-        print(count)
 
 class ImportScreen(Screen):
     images_to_import = ListProperty([])
     duplicate_imports = ListProperty([])
     catalog_duplicates = ListProperty([])
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.bind(images_to_import=self._on_update_images_to_import)
+        self.bind(duplicate_imports=self._on_update_duplicate_imports)
+        self.bind(catalog_duplicates=self._on_update_catalog_duplicates)
 
     def set_paths_to_import(self, paths):
         images = scan_list_for_images(paths)
@@ -72,19 +76,40 @@ class ImportScreen(Screen):
         not_in_catalog, duplicates_in_catalog = find_catalog_duplicates(unique)
 
         self.images_to_import = not_in_catalog
-        self.duplicate_imports = duplicates
-        self.catalog_duplicates = duplicates_in_catalog
 
-    def process_imports(self):
+        self.duplicate_imports = [
+            { 
+                "hash": "group-1",  
+                "image_list": [
+                    {"path":"/Users/kpe/Desktop/Level_0/8663892916_f048be298f_o.jpg"},
+                    {"path":"/Users/kpe/Desktop/Level_0/14305059168_6f889b3b49_o.jpg"},
+                    {"path":"/Users/kpe/Desktop/Level_0/39737483343_97c4be7232_o.jpg"}
+                ]
+            }, 
+            {
+                "hash": "group-1",
+                "image_list": [
+                    {"path":"/Users/kpe/Desktop/Level_0/45065073822_5273e26d5e_o.jpg"},
+                    {"path":"/Users/kpe/Desktop/Level_0/14305059168_6f889b3b49_o.jpg"},
+                ]
+            }
+        ]
+
+        self.catalog_duplicates = [
+            {
+                "hash": "group-1",
+                "image_list": [
+                    {"path":"/Users/kpe/Desktop/Level_0/45065073822_5273e26d5e_o.jpg"},
+                    {"path":"/Users/kpe/Desktop/Level_0/14305059168_6f889b3b49_o.jpg"}
+                ]
+            }
+        ]
+
+    def _on_update_images_to_import(self, instance, value):
         pass
 
-    def list_duplicates(self, duplicates):
-        for duplicate in duplicates:
-            print("Duplicates:")
-            for image in duplicates[duplicate]:
-                print(f"\t{image["path"]}")
+    def _on_update_duplicate_imports(self, instance, value):
+        pass
 
-    def list_catalog_duplicates(self, duplicates):
-        for duplicate in duplicates:
-            print(f"\tIn catalog: {duplicate[0]['path']}")
-            print(f"\tDuplicate: {duplicate[1]['path']}")
+    def _on_update_catalog_duplicates(self, instance, value):
+        pass
