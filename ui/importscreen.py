@@ -70,7 +70,7 @@ class ImportScreen(Screen):
         self.bind(duplicate_imports=self._on_update_duplicate_imports)
         self.bind(catalog_duplicates=self._on_update_catalog_duplicates)
 
-    def set_paths_to_import(self, paths):
+    def process_import_paths(self, paths):
         images = scan_list_for_images(paths)
         unique, duplicates = find_duplicates(images)
         not_in_catalog, duplicates_in_catalog = find_catalog_duplicates(unique)
