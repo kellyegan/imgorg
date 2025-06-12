@@ -69,14 +69,6 @@ class ImportScreen(Screen):
         self.bind(images_to_import=self._on_update_images_to_import)
         self.bind(duplicate_imports=self._on_update_duplicate_imports)
         self.bind(catalog_duplicates=self._on_update_catalog_duplicates)
-
-    def set_paths_to_import(self, paths):
-        images = scan_list_for_images(paths)
-        unique, duplicates = find_duplicates(images)
-        not_in_catalog, duplicates_in_catalog = find_catalog_duplicates(unique)
-
-        self.images_to_import = not_in_catalog
-
         self.duplicate_imports = [
             { 
                 "hash": "group-1",  
@@ -99,11 +91,18 @@ class ImportScreen(Screen):
             {
                 "hash": "group-1",
                 "image_list": [
-                    {"path":"/Users/kpe/Desktop/Level_0/45065073822_5273e26d5e_o.jpg"},
+                    {"path":"/Users/kpe/Desktop/Level_0/22505248287_c658ab9b55_o.jpg"},
                     {"path":"/Users/kpe/Desktop/Level_0/14305059168_6f889b3b49_o.jpg"}
                 ]
             }
         ]
+
+    def set_paths_to_import(self, paths):
+        images = scan_list_for_images(paths)
+        unique, duplicates = find_duplicates(images)
+        not_in_catalog, duplicates_in_catalog = find_catalog_duplicates(unique)
+
+        self.images_to_import = not_in_catalog
 
     def _on_update_images_to_import(self, instance, value):
         pass
