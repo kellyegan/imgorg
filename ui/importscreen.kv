@@ -65,7 +65,7 @@
 
     GridLayout:
         cols: 1
-        padding: [dp(48), dp(24)]
+        padding: [dp(96), dp(48)]
         spacing: dp(18)
 
         Label:
@@ -77,15 +77,11 @@
             size_hint_y: None
             height: "60sp"
 
-        DuplicatesList:
-            id: import_duplicates
-            title: "Duplicate imports"
-            duplicates_list: root.duplicate_imports
- 
-        DuplicatesList:
-            id: catalog_duplicates
-            title: "Duplicate catalog"
-            duplicates_list: root.catalog_duplicates
+        GridLayout:
+            id: lists
+            cols: 1
+            padding: [0, 0]
+            spacing: dp(18)
 
         BoxLayout:
             id: submit_buttons
@@ -102,7 +98,7 @@
                 background_normal: ""
                 background_color: (0.3, 0.3, 0.3, 1)
                 on_release: root.cancel_import()
-                
+
             Button:
                 text: "Import"
                 font_size: "18sp"

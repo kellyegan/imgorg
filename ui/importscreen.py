@@ -51,13 +51,21 @@ class DuplicatesList(GridLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.bind(duplicates_list=self._on_update_duplicate_list)
+        self.update_duplicates_list(self.duplicates_list)
+
+    def on_pre_enter(self):
+        self.update_duplicates_list(self.duplicates_list)
 
     def _on_update_duplicate_list(self, instance, value):
-        self.ids.duplicates_list.clear_widgets()
+        self.update_duplicates_list(self.duplicates_list)
 
-        for item in value:
+    def update_duplicates_list(self, list):
+        list_widget = self.ids.duplicates_list
+        list_widget.clear_widgets()
+
+        for item in list:
             image_chooser = ImageChooser(group=item["group"], image_list=item["image_list"])
-            self.ids.duplicates_list.add_widget(image_chooser)
+            list_widget.add_widget(image_chooser)
 
 class ImportScreen(Screen):
     images_to_import = ListProperty([])
@@ -71,8 +79,23 @@ class ImportScreen(Screen):
         self.bind(catalog_duplicates=self._on_update_catalog_duplicates)
 
     def on_pre_enter(self, *args):
-        self.ids.import_duplicates.duplicates_list = self.duplicate_imports
-        self.ids.catalog_duplicates.duplicates_list = self.catalog_duplicates
+        lists = self.ids.lists
+        lists.clear_widgets()
+
+        if len(self.duplicate_imports) > 0:
+            import_duplicates_list = DuplicatesList(
+                title="These images selected for import appear to be duplicates",
+                duplicates_list=self.duplicate_imports
+            )
+            lists.add_widget(import_duplicates_list)
+
+
+        if len(self.catalog_duplicates) > 0:
+            catalog_duplicates_list = DuplicatesList(
+                title="These images appear to already be in the catalog",
+                duplicates_list=self.catalog_duplicates
+            )
+            lists.add_widget(catalog_duplicates_list)
 
 
     def process_import_paths(self, paths):

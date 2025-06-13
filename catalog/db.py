@@ -74,7 +74,7 @@ def add_image(connection, img_details, ignore_duplicate = False):
     # Skip adding duplicate image paths
     cur.execute("SELECT * FROM images WHERE path = ?", (img_details['path'],))
     if cur.fetchone():
-        print("This is a duplicate image path.")
+        print("This is a duplicate image path. Skipping")
         return  # Silently skip this image
 
     try:
