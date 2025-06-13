@@ -60,11 +60,9 @@ def find_catalog_duplicates(image_details_list):
 
             if existing_image:
                 print(f"Duplicate found: {existing_image["path"]}")
-                # If it is same image just ignore it
+                # If it is same path just ignore it
                 if image_details["path"] != existing_image["path"]:
-                    continue
-
-                duplicates.append({"existing":existing_image, "duplicate": image_details})
+                    duplicates.append({"id": existing_image["id"], "image_list": [existing_image, image_details]})
             else:
                images.append(image_details)
 

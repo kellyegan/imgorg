@@ -20,7 +20,7 @@ class FileToggle(ToggleButton):
 
 class ImageChooser(BoxLayout):
     image_list = ListProperty()
-    hash = StringProperty("A")
+    group = StringProperty("")
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -33,7 +33,7 @@ class ImageChooser(BoxLayout):
     def update_image_list(self, image_list):
         self.ids.image_list.clear_widgets()
         for image in image_list:
-            toggle = FileToggle(path=image["path"], hash=self.hash)
+            toggle = FileToggle(path=image["path"], hash=self.group)
             self.ids.image_list.add_widget(toggle)
         self.ids.image_thumb.source = self.get_thumbnail()
 
@@ -56,7 +56,7 @@ class DuplicatesList(GridLayout):
         self.ids.duplicates_list.clear_widgets()
 
         for item in value:
-            image_chooser = ImageChooser(hash=item["hash"], image_list=item["image_list"])
+            image_chooser = ImageChooser(group=item["group"], image_list=item["image_list"])
             self.ids.duplicates_list.add_widget(image_chooser)
 
 class ImportScreen(Screen):
@@ -71,14 +71,8 @@ class ImportScreen(Screen):
         self.bind(catalog_duplicates=self._on_update_catalog_duplicates)
 
     def on_pre_enter(self, *args):
-        print(f"Imports ({len(self.images_to_import)})")
-        print(self.images_to_import)
-        print(f"Dupes ({len(self.duplicate_imports)})")
-        print(self.duplicate_imports)
-        print(f"In catalog ({len(self.catalog_duplicates)})")
-        print(self.catalog_duplicates)
-
         self.ids.import_duplicates.duplicates_list = self.duplicate_imports
+        self.ids.catalog_duplicates.duplicates_list = self.catalog_duplicates
 
 
     def process_import_paths(self, paths):
@@ -89,12 +83,12 @@ class ImportScreen(Screen):
 
         # Look for any duplicates with images
         unique, duplicates = find_duplicates(images)
-        self.duplicate_imports = duplicates
+        self.duplicate_imports = [{"group": d["hash"], "image_list": d["image_list"]} for d in duplicates]
 
         # Check catalog for images that might also be duplicates
         not_in_catalog, duplicates_in_catalog = find_catalog_duplicates(unique)
         self.images_to_import = not_in_catalog
-        self.catalog_duplicates = duplicates_in_catalog
+        self.catalog_duplicates = [{"group": str(d["id"]), "image_list": d["image_list"]} for d in duplicates_in_catalog]
 
     def cancel_import(self):
         self.images_to_import = []
