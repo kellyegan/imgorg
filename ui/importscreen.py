@@ -96,6 +96,14 @@ class ImportScreen(Screen):
         self.images_to_import = not_in_catalog
         self.catalog_duplicates = duplicates_in_catalog
 
+    def cancel_import(self):
+        self.images_to_import = []
+        self.duplicate_imports = []
+        self.catalog_duplicates = []
+
+        app = App.get_running_app()
+        app.view_thumbnail_browser()
+
 
     def _on_update_images_to_import(self, instance, value):
         pass
