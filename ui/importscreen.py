@@ -71,9 +71,13 @@ class ImportScreen(Screen):
         self.bind(catalog_duplicates=self._on_update_catalog_duplicates)
         self.import_list = []
 
-    def on_enter(self, *args):
+    def on_pre_enter(self, *args):
+        print("Imports")
         print(self.import_list)
+        print("Dupes")
         print(self.duplicate_imports)
+        print("In catalog")
+        print(self.catalog_duplicates)
 
     def process_import_paths(self, paths):
         # Search a list of paths for image files
@@ -86,36 +90,8 @@ class ImportScreen(Screen):
         # Check catalog for images that might also be duplicates
         not_in_catalog, duplicates_in_catalog = find_catalog_duplicates(unique)
         self.import_list = not_in_catalog
+        self.catalog_duplicates = duplicates_in_catalog
 
-        # self.images_to_import = not_in_catalog
-
-        # self.duplicate_imports = [
-        #     { 
-        #         "hash": "group-1",  
-        #         "image_list": [
-        #             {"path":"/Users/kpe/Desktop/Level_0/8663892916_f048be298f_o.jpg"},
-        #             {"path":"/Users/kpe/Desktop/Level_0/14305059168_6f889b3b49_o.jpg"},
-        #             {"path":"/Users/kpe/Desktop/Level_0/39737483343_97c4be7232_o.jpg"}
-        #         ]
-        #     }, 
-        #     {
-        #         "hash": "group-1",
-        #         "image_list": [
-        #             {"path":"/Users/kpe/Desktop/Level_0/45065073822_5273e26d5e_o.jpg"},
-        #             {"path":"/Users/kpe/Desktop/Level_0/14305059168_6f889b3b49_o.jpg"},
-        #         ]
-        #     }
-        # ]
-
-        self.catalog_duplicates = [
-            {
-                "hash": "group-1",
-                "image_list": [
-                    {"path":"/Users/kpe/Desktop/Level_0/45065073822_5273e26d5e_o.jpg"},
-                    {"path":"/Users/kpe/Desktop/Level_0/14305059168_6f889b3b49_o.jpg"}
-                ]
-            }
-        ]
 
     def _on_update_images_to_import(self, instance, value):
         pass
