@@ -38,10 +38,10 @@ def get_all_images():
         rows = cur.fetchall()
         return [dict(row) for row in rows]
     
-def is_duplicate(connection, image_details):
+def is_duplicate(connection, filehash):
     cur = connection.cursor()
     
-    cur.execute("SELECT * FROM images WHERE filehash = ?", (image_details['filehash'],))
+    cur.execute("SELECT * FROM images WHERE filehash = ?", (filehash,))
     existing_image = cur.fetchone()
 
     if existing_image:
@@ -56,7 +56,7 @@ def find_catalog_duplicates(image_details_list):
     with get_connection(DB_NAME) as conn:
         conn.row_factory = sqlite3.Row
         for image_details in image_details_list:
-            existing_image = is_duplicate(conn, image_details)
+            existing_image = is_duplicate(conn, image_details['filehash'])
 
             if existing_image:
                 print(f"Duplicate found: {existing_image["path"]}")

@@ -97,7 +97,6 @@ class ImportScreen(Screen):
             )
             lists.add_widget(catalog_duplicates_list)
 
-
     def process_import_paths(self, paths):
         print(f"Importing {len(paths)} paths")
 
