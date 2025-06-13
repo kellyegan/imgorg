@@ -73,32 +73,39 @@ class ImportScreen(Screen):
 
     def on_enter(self, *args):
         print(self.import_list)
+        print(self.duplicate_imports)
 
     def process_import_paths(self, paths):
+        # Search a list of paths for image files
         images = find_images(paths)
+
+        # Look for any duplicates with images
         unique, duplicates = find_duplicates(images)
-        print(duplicates)
-        # not_in_catalog, duplicates_in_catalog = find_catalog_duplicates(unique)
+        self.duplicate_imports = duplicates
+
+        # Check catalog for images that might also be duplicates
+        not_in_catalog, duplicates_in_catalog = find_catalog_duplicates(unique)
+        self.import_list = not_in_catalog
 
         # self.images_to_import = not_in_catalog
 
-        self.duplicate_imports = [
-            { 
-                "hash": "group-1",  
-                "image_list": [
-                    {"path":"/Users/kpe/Desktop/Level_0/8663892916_f048be298f_o.jpg"},
-                    {"path":"/Users/kpe/Desktop/Level_0/14305059168_6f889b3b49_o.jpg"},
-                    {"path":"/Users/kpe/Desktop/Level_0/39737483343_97c4be7232_o.jpg"}
-                ]
-            }, 
-            {
-                "hash": "group-1",
-                "image_list": [
-                    {"path":"/Users/kpe/Desktop/Level_0/45065073822_5273e26d5e_o.jpg"},
-                    {"path":"/Users/kpe/Desktop/Level_0/14305059168_6f889b3b49_o.jpg"},
-                ]
-            }
-        ]
+        # self.duplicate_imports = [
+        #     { 
+        #         "hash": "group-1",  
+        #         "image_list": [
+        #             {"path":"/Users/kpe/Desktop/Level_0/8663892916_f048be298f_o.jpg"},
+        #             {"path":"/Users/kpe/Desktop/Level_0/14305059168_6f889b3b49_o.jpg"},
+        #             {"path":"/Users/kpe/Desktop/Level_0/39737483343_97c4be7232_o.jpg"}
+        #         ]
+        #     }, 
+        #     {
+        #         "hash": "group-1",
+        #         "image_list": [
+        #             {"path":"/Users/kpe/Desktop/Level_0/45065073822_5273e26d5e_o.jpg"},
+        #             {"path":"/Users/kpe/Desktop/Level_0/14305059168_6f889b3b49_o.jpg"},
+        #         ]
+        #     }
+        # ]
 
         self.catalog_duplicates = [
             {
