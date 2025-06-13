@@ -63,6 +63,10 @@ class ImgOrgApp(App):
         self.sm.current = "import"
 
     def _on_drop_file(self, window, filepath, x, y):
+        if self.sm.current == "import":
+            # Don't allow drop files while actively importing
+            return
+        
         path_string = filepath.decode('utf-8')
 
         self.drop_buffer.append(path_string)
