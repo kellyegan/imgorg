@@ -18,7 +18,6 @@ def calculate_file_hash(file_path, chunk_size=8192):
         print(f"Error hashing {file_path}: {e}")
         return None
 
-
 def get_image_details(file_path):
     results = {
         'filename': None,
@@ -55,31 +54,28 @@ def get_image_details(file_path):
     
     return results
 
-def scan_for_images(path):
-    if os.path.isdir(path):
-        return scan_dir_for_images(path)
-    elif os.path.isfile(path):
-        return [get_image_details(path)]
+def find_images(path_list: list[str]):
+    """
+    Look through a list of paths for image files
+    """
+    images = set()
 
-def scan_dir_for_images(base_dir):
-    base_path = Path(base_dir)
-    images = []
-    
-    for filepath in sorted(base_path.rglob("*"), key=lambda x: (len(str(x)), str(x).lower())):
-        if filepath.suffix.lower() in IMAGE_EXTENSIONS and filepath.is_file():
-            image_details = get_image_details(filepath)
+    for path_string in path_list:
+        path = Path(path_string)
 
-            if image_details:
-                images.append(image_details)
+        if not path:
+            print(f"ERROR: {path_string} is not a valid path.")
+            continue
+        
+        if path.is_dir():
+            for filepath in sorted(path.rglob("*"), key=lambda x: (len(str(x)), str(x).lower())):
+                if filepath.is_file() and filepath.suffix.lower() in IMAGE_EXTENSIONS:
+                    images.add(filepath.as_posix())
+        elif path.is_file():
+            images.add(path.as_posix())
 
-    return images
-
-def scan_list_for_images(path_list):
-    images = []
-    for path in path_list:
-        images += scan_for_images(path)
-
-    return images
+    image_details = [get_image_details(image) for image in list(images)]
+    return image_details
 
 def find_duplicates(images):
     images_by_hash = dict()

@@ -12,7 +12,7 @@ import os
 from kivy.properties import ListProperty, StringProperty
 
 from catalog.db import get_all_images, add_image_list, find_catalog_duplicates  # You must have this function in catalog/db.py
-from catalog.image_importer import scan_list_for_images, find_duplicates
+from catalog.image_importer import find_images, find_duplicates
 
 class FileToggle(ToggleButton):
     path = StringProperty("")
@@ -69,13 +69,17 @@ class ImportScreen(Screen):
         self.bind(images_to_import=self._on_update_images_to_import)
         self.bind(duplicate_imports=self._on_update_duplicate_imports)
         self.bind(catalog_duplicates=self._on_update_catalog_duplicates)
+        self.import_list = []
+
+    def on_enter(self, *args):
+        print(self.import_list)
 
     def process_import_paths(self, paths):
-        images = scan_list_for_images(paths)
+        images = find_images(paths)
         unique, duplicates = find_duplicates(images)
-        not_in_catalog, duplicates_in_catalog = find_catalog_duplicates(unique)
+        # not_in_catalog, duplicates_in_catalog = find_catalog_duplicates(unique)
 
-        self.images_to_import = not_in_catalog
+        # self.images_to_import = not_in_catalog
 
         self.duplicate_imports = [
             { 
