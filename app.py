@@ -45,8 +45,6 @@ class ImgOrgApp(App):
         self.image_list = get_all_images()
         self.active_index = 0
 
-        self.sm.current = "import"
-
         return self.sm
     
     def view_image_preview(self, index):
@@ -63,8 +61,8 @@ class ImgOrgApp(App):
         self.sm.current = "import"
 
     def _on_drop_file(self, window, filepath, x, y):
+        # Don't allow drop files while import screen is visible
         if self.sm.current == "import":
-            # Don't allow drop files while actively importing
             return
         
         path_string = filepath.decode('utf-8')

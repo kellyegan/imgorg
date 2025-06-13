@@ -69,17 +69,21 @@ class ImportScreen(Screen):
         self.bind(images_to_import=self._on_update_images_to_import)
         self.bind(duplicate_imports=self._on_update_duplicate_imports)
         self.bind(catalog_duplicates=self._on_update_catalog_duplicates)
-        self.import_list = []
 
     def on_pre_enter(self, *args):
-        print("Imports")
-        print(self.import_list)
-        print("Dupes")
+        print(f"Imports ({len(self.images_to_import)})")
+        print(self.images_to_import)
+        print(f"Dupes ({len(self.duplicate_imports)})")
         print(self.duplicate_imports)
-        print("In catalog")
+        print(f"In catalog ({len(self.catalog_duplicates)})")
         print(self.catalog_duplicates)
 
+        self.ids.import_duplicates.duplicates_list = self.duplicate_imports
+
+
     def process_import_paths(self, paths):
+        print(f"Importing {len(paths)} paths")
+
         # Search a list of paths for image files
         images = find_images(paths)
 
@@ -89,7 +93,7 @@ class ImportScreen(Screen):
 
         # Check catalog for images that might also be duplicates
         not_in_catalog, duplicates_in_catalog = find_catalog_duplicates(unique)
-        self.import_list = not_in_catalog
+        self.images_to_import = not_in_catalog
         self.catalog_duplicates = duplicates_in_catalog
 
 
