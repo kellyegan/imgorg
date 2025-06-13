@@ -77,6 +77,7 @@ class ImportScreen(Screen):
     def process_import_paths(self, paths):
         images = find_images(paths)
         unique, duplicates = find_duplicates(images)
+        print(duplicates)
         # not_in_catalog, duplicates_in_catalog = find_catalog_duplicates(unique)
 
         # self.images_to_import = not_in_catalog

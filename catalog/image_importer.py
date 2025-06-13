@@ -93,7 +93,7 @@ def find_duplicates(images):
         else:
             images_by_hash[hash_a] = [image_a]
 
-    duplicates = {hash: image_list for hash, image_list in images_by_hash.items() if len(image_list) > 1}
+    duplicates = [{"hash": hash, "image_list": image_list} for hash, image_list in images_by_hash.items() if len(image_list) > 1]
     unique = [image_list[0] for hash, image_list in images_by_hash.items() if len(image_list) == 1]
 
     return unique, duplicates
