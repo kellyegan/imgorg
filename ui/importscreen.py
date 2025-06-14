@@ -120,6 +120,13 @@ class ImportScreen(Screen):
         app = App.get_running_app()
         app.view_thumbnail_browser()
 
+    def import_images(self):
+        add_image_list(self.images_to_import)
+        app = App.get_running_app()
+        app.update_image_list()
+
+        self.cancel_import()
+
 
     def _on_update_images_to_import(self, instance, value):
         pass

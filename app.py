@@ -42,10 +42,13 @@ class ImgOrgApp(App):
         self.sm.add_widget(ImagePreviewScreen())
         self.sm.add_widget(ImportScreen())
 
-        self.image_list = get_all_images()
+        self.update_image_list()
         self.active_index = 0
 
         return self.sm
+    
+    def update_image_list(self):
+        self.image_list = get_all_images()
     
     def view_image_preview(self, index):
         self.set_active(index)
