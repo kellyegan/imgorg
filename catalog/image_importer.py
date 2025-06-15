@@ -77,7 +77,7 @@ def find_images(path_list: list[str]):
     image_details = [get_image_details(image) for image in list(images)]
     return image_details
 
-def find_duplicates(images):
+def group_by_hash(images):
     images_by_hash = dict()
 
     for image_a in images:
@@ -93,8 +93,8 @@ def find_duplicates(images):
         else:
             images_by_hash[hash_a] = [image_a]
 
-    duplicates = [{"hash": hash, "image_list": image_list} for hash, image_list in images_by_hash.items() if len(image_list) > 1]
-    unique = [image_list[0] for hash, image_list in images_by_hash.items() if len(image_list) == 1]
+    images_by_hash = [{"hash": hash, "image_list": image_list} for hash, image_list in images_by_hash.items()]
+    # unique = [image_list[0] for hash, image_list in images_by_hash.items() if len(image_list) == 1]
 
-    return unique, duplicates
+    return images_by_hash
 

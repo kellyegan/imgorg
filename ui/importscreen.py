@@ -11,8 +11,8 @@ import os
 
 from kivy.properties import ListProperty, StringProperty
 
-from catalog.db import get_all_images, add_image_list, find_catalog_duplicates  # You must have this function in catalog/db.py
-from catalog.image_importer import find_images, find_duplicates
+from catalog.db import get_all_images, add_image_list, find_in_catalog  # You must have this function in catalog/db.py
+from catalog.image_importer import find_images, group_by_hash
 
 class FileToggle(ToggleButton):
     path = StringProperty("")
@@ -84,7 +84,7 @@ class ImportScreen(Screen):
 
         if len(self.duplicate_imports) > 0:
             import_duplicates_list = DuplicatesList(
-                title="These images selected for import appear to be duplicates",
+                title="These are duplicates. Which do you want to import?",
                 duplicates_list=self.duplicate_imports
             )
             lists.add_widget(import_duplicates_list)
@@ -92,7 +92,7 @@ class ImportScreen(Screen):
 
         if len(self.catalog_duplicates) > 0:
             catalog_duplicates_list = DuplicatesList(
-                title="These images appear to already be in the catalog",
+                title="These are in the catalog. Do you want to update the path?",
                 duplicates_list=self.catalog_duplicates
             )
             lists.add_widget(catalog_duplicates_list)
@@ -103,14 +103,22 @@ class ImportScreen(Screen):
         # Search a list of paths for image files
         images = find_images(paths)
 
-        # Look for any duplicates with images
-        unique, duplicates = find_duplicates(images)
-        self.duplicate_imports = [{"group": d["hash"], "image_list": d["image_list"]} for d in duplicates]
+        # Group images that appear to be duplicates
+        images_by_hash = group_by_hash(images)
 
-        # Check catalog for images that might also be duplicates
-        not_in_catalog, duplicates_in_catalog = find_catalog_duplicates(unique)
-        self.images_to_import = not_in_catalog
-        self.catalog_duplicates = [{"group": str(d["id"]), "image_list": d["image_list"]} for d in duplicates_in_catalog]
+        # Check catalog for images already imported
+        not_in_catalog, in_catalog = find_in_catalog(images_by_hash)
+
+        unique = [hash["image_list"][0] for hash in not_in_catalog if len(hash["image_list"]) == 1]
+        duplicate_imports = [hash for hash in not_in_catalog if len(hash["image_list"]) > 1]
+
+        print("Unique")
+        for image in unique:
+            print(image["path"])
+
+        self.images_to_import = unique
+        self.duplicate_imports = [{"group": d["hash"], "image_list": d["image_list"]} for d in duplicate_imports]
+        self.catalog_duplicates = [{"group": str(d["id"]), "image_list": d["image_list"]} for d in in_catalog]
 
     def cancel_import(self):
         self.images_to_import = []
