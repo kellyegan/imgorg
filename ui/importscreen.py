@@ -3,6 +3,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
+from kivy.uix.label import Label
 from kivy.core.window import Window
 from kivy.clock import Clock
 from kivy.metrics import dp
@@ -13,6 +14,11 @@ from kivy.properties import ListProperty, StringProperty
 
 from catalog.db import add_image_list, update_image, find_in_catalog  # You must have this function in catalog/db.py
 from catalog.image_importer import find_images, group_by_hash
+
+
+class StatusLabel(Label):
+    pass
+
 
 class FileToggle(ToggleButton):
     path = StringProperty("")
@@ -99,10 +105,23 @@ class ImportScreen(Screen):
 
         self.import_duplicates_list = None
         self.catalog_duplicates_list = None
+        self.already_imported_count = 0
 
     def on_pre_enter(self, *args):
         lists = self.ids.lists
         lists.clear_widgets()
+
+        if len(self.images_to_import) > 0:
+            import_count = len(self.images_to_import)
+            import_message = f"{import_count} image{'s' if import_count > 1 else ''} ready to import."
+
+            if self.already_imported_count > 0:
+                import_message += f" {self.already_imported_count} are already in the catalog."
+
+            import_message_label = StatusLabel(text=import_message)
+            lists.add_widget(import_message_label)
+        else:
+            print("no images to import")
 
         if len(self.duplicate_imports) > 0:
             self.import_duplicates_list = DuplicatesList(
@@ -114,7 +133,7 @@ class ImportScreen(Screen):
 
         if len(self.catalog_duplicates) > 0:
             self.catalog_duplicates_list = DuplicatesList(
-                title="These are in the catalog. Do you want to update the path?",
+                title="These images are duplicates of images in the catalog. Do you want to update the path?",
                 duplicates_list=self.catalog_duplicates
             )
             lists.add_widget(self.catalog_duplicates_list)
@@ -129,7 +148,7 @@ class ImportScreen(Screen):
         images_by_hash = group_by_hash(images)
 
         # Check catalog for images already imported
-        not_in_catalog, in_catalog = find_in_catalog(images_by_hash)
+        not_in_catalog, in_catalog, ignored = find_in_catalog(images_by_hash)
 
         unique = [hash["image_list"][0] for hash in not_in_catalog if len(hash["image_list"]) == 1]
         duplicate_imports = [hash for hash in not_in_catalog if len(hash["image_list"]) > 1]
@@ -137,6 +156,7 @@ class ImportScreen(Screen):
         self.images_to_import = unique
         self.duplicate_imports = [{"group": d["hash"], "image_list": d["image_list"]} for d in duplicate_imports]
         self.catalog_duplicates = [{"group": str(d["id"]), "image_list": d["image_list"]} for d in in_catalog]
+        self.already_imported_count = ignored
 
     def exit_import(self):
         self.images_to_import = []
