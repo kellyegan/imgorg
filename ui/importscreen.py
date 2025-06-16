@@ -11,7 +11,7 @@ import os
 
 from kivy.properties import ListProperty, StringProperty
 
-from catalog.db import get_all_images, add_image_list, find_in_catalog  # You must have this function in catalog/db.py
+from catalog.db import add_image_list, update_image, find_in_catalog  # You must have this function in catalog/db.py
 from catalog.image_importer import find_images, group_by_hash
 
 class FileToggle(ToggleButton):
@@ -54,7 +54,7 @@ class ImageChooser(BoxLayout):
     def get_state(self):
         for index, toggle in enumerate(self.toggle_list):
             if toggle.state == "down":
-                return self.image_list[index]
+                return (self.group, self.image_list[index])
         return None
 
 
@@ -147,10 +147,20 @@ class ImportScreen(Screen):
         app.view_thumbnail_browser()
 
     def import_images(self):
+        selections = []
         if self.import_duplicates_list:
-            print(self.import_duplicates_list.get_state())
+            selections = [choice[1] for choice in self.import_duplicates_list.get_state()]
+
         if self.catalog_duplicates_list:
-            print(self.catalog_duplicates_list.get_state())
+            updates = self.catalog_duplicates_list.get_state()
+            for update in updates:
+                if update:
+                    id = update[0]
+                    image_details = update[1]
+
+                    print(image_details)
+                    if "id" not in image_details.keys():
+                        update_image(id, **image_details)
 
         # add_image_list(self.images_to_import)
         app = App.get_running_app()

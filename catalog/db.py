@@ -89,6 +89,23 @@ def add_image(connection, img_details, ignore_duplicate = False):
 
     connection.commit()
 
+def update_image(id, **kwargs):
+    with get_connection(DB_NAME) as conn:
+        values = list(kwargs.values())
+        values.append(id)
+        values = tuple(values)
+
+        query = "UPDATE images SET "
+        query += "".join([f"{key} = ?, " for key in kwargs.keys()])
+        query = query[:-2] + " WHERE id = ?" # Remove the last comma from the query
+        
+        cur = conn.cursor()
+        cur.execute(query, values)
+
+        conn.commit()
+
+
+
 def add_image_list(img_details_list):
     with get_connection(DB_NAME) as conn:
         for img_details in img_details_list:
