@@ -138,7 +138,7 @@ class ImportScreen(Screen):
         self.duplicate_imports = [{"group": d["hash"], "image_list": d["image_list"]} for d in duplicate_imports]
         self.catalog_duplicates = [{"group": str(d["id"]), "image_list": d["image_list"]} for d in in_catalog]
 
-    def cancel_import(self):
+    def exit_import(self):
         self.images_to_import = []
         self.duplicate_imports = []
         self.catalog_duplicates = []
@@ -162,11 +162,11 @@ class ImportScreen(Screen):
                     if "id" not in image_details.keys():
                         update_image(id, **image_details)
 
-        # add_image_list(self.images_to_import)
+        add_image_list(self.images_to_import + selections)
+
         app = App.get_running_app()
         app.update_image_list()
-
-        self.cancel_import()
+        self.exit_import()
 
     def _on_update_images_to_import(self, instance, value):
         pass
