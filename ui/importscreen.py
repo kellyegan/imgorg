@@ -150,7 +150,7 @@ class ImportScreen(Screen):
         if self.import_duplicates_list:
             print(self.import_duplicates_list.get_state())
         if self.catalog_duplicates_list:
-            print(self.import_duplicates_list.get_state())
+            print(self.catalog_duplicates_list.get_state())
 
         # add_image_list(self.images_to_import)
         app = App.get_running_app()
