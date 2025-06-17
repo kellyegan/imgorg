@@ -51,8 +51,8 @@ def is_duplicate(connection, filehash):
     
 def find_in_catalog(images_by_hash):
     not_in_catalog = []
+    duplicate = []
     in_catalog = []
-    ignore_count = 0
 
     with get_connection(DB_NAME) as conn:
         conn.row_factory = sqlite3.Row
@@ -60,16 +60,22 @@ def find_in_catalog(images_by_hash):
             existing_image = is_duplicate(conn, hash_group['hash'])
 
             if existing_image:
-                # If it is same path just ignore it
-                image_list = [image for image in hash_group["image_list"] if image["path"] != existing_image["path"]]
-                ignore_count += len(hash_group["image_list"]) - len(image_list)
+                
+                image_list = []
+
+                for image in hash_group["image_list"]:
+                    # Check if the same exact image is already in catalog
+                    if image["path"] != existing_image["path"]:
+                        image_list.append(image)
+                    else:
+                        in_catalog.append(image)
 
                 if len(image_list) > 0:
-                    in_catalog.append({"id": existing_image["id"], "image_list": [existing_image, *image_list]})
+                    duplicate.append({"id": existing_image["id"], "image_list": [existing_image, *image_list]})
             else:
                not_in_catalog.append(hash_group)
 
-        return not_in_catalog, in_catalog, ignore_count
+        return not_in_catalog, duplicate, in_catalog
 
 def add_image(connection, img_details, ignore_duplicate = False):
     cur = connection.cursor()

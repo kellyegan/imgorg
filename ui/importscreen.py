@@ -148,15 +148,15 @@ class ImportScreen(Screen):
         images_by_hash = group_by_hash(images)
 
         # Check catalog for images already imported
-        not_in_catalog, in_catalog, ignored = find_in_catalog(images_by_hash)
+        not_in_catalog, catalog_duplicate, in_catalog = find_in_catalog(images_by_hash)
 
         unique = [hash["image_list"][0] for hash in not_in_catalog if len(hash["image_list"]) == 1]
         duplicate_imports = [hash for hash in not_in_catalog if len(hash["image_list"]) > 1]
 
         self.images_to_import = unique
         self.duplicate_imports = [{"group": d["hash"], "image_list": d["image_list"]} for d in duplicate_imports]
-        self.catalog_duplicates = [{"group": str(d["id"]), "image_list": d["image_list"]} for d in in_catalog]
-        self.already_imported_count = ignored
+        self.catalog_duplicates = [{"group": str(d["id"]), "image_list": d["image_list"]} for d in catalog_duplicate]
+        self.already_imported_count = len(in_catalog)
 
     def exit_import(self):
         self.images_to_import = []
