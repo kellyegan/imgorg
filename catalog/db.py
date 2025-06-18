@@ -31,18 +31,58 @@ def create_database(database_name):
     return conn
 
 def query_db(query: str, values : tuple=(), on_results=None, conn=None):
+    # If no database connection provided, create one
     if conn is None:
-        print('No database connection provided. Creating a new one.')
         with get_connection(DB_NAME) as conn:
             return query_db(query, values, on_results, conn=conn)
     else:
-        print('Using provided database connection.')
         conn.row_factory = sqlite3.Row
         cur = conn.cursor()
         response = cur.execute(query, values)
         conn.commit()
-        print(on_results == None)
-        return on_results(response)
+        if on_results:
+            return on_results(response)
+    
+def add_image(connection, img_details, ignore_duplicate = False):
+    cur = connection.cursor()
+
+    # Skip adding duplicate image paths
+    cur.execute("SELECT * FROM images WHERE path = ?", (img_details['path'],))
+    if cur.fetchone():
+        print("This is a duplicate image path. Skipping")
+        return  # Silently skip this image
+
+    try:
+        cur.execute("""
+            INSERT OR IGNORE INTO images (path, filename, created_at, modified_at, filesize, width, height, filetype, filehash)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (img_details['path'], img_details['filename'], img_details['created_at'], img_details['modified_at'],
+            img_details['filesize'], img_details['width'], img_details['height'], img_details['filetype'], img_details['filehash']))
+    except Exception as e:
+        print(f"Error processing {img_details['path']}: {e}")
+
+    connection.commit()
+
+def update_image(id, **kwargs):
+    with get_connection(DB_NAME) as conn:
+        values = list(kwargs.values())
+        values.append(id)
+        values = tuple(values)
+
+        query = "UPDATE images SET "
+        query += "".join([f"{key} = ?, " for key in kwargs.keys()])
+        query = query[:-2] + " WHERE id = ?" # Remove the last comma from the query
+        
+        cur = conn.cursor()
+        cur.execute(query, values)
+
+        conn.commit()
+
+def delete_images(ids_to_delete: list[int], conn=None):
+    query = "DELETE FROM images WHERE id IN "
+    query += f"({("?, " * len(ids_to_delete))[:-2]})"
+
+    query_db(query=query, values=ids_to_delete, on_results=None, conn=conn)
 
 def get_all_images():
     query = "SELECT * FROM images ORDER BY filename"
@@ -87,53 +127,6 @@ def find_in_catalog(images_by_hash):
                not_in_catalog.append(hash_group)
 
         return not_in_catalog, duplicate, in_catalog
-
-def add_image(connection, img_details, ignore_duplicate = False):
-    cur = connection.cursor()
-
-    # Skip adding duplicate image paths
-    cur.execute("SELECT * FROM images WHERE path = ?", (img_details['path'],))
-    if cur.fetchone():
-        print("This is a duplicate image path. Skipping")
-        return  # Silently skip this image
-
-    try:
-        cur.execute("""
-            INSERT OR IGNORE INTO images (path, filename, created_at, modified_at, filesize, width, height, filetype, filehash)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (img_details['path'], img_details['filename'], img_details['created_at'], img_details['modified_at'],
-            img_details['filesize'], img_details['width'], img_details['height'], img_details['filetype'], img_details['filehash']))
-    except Exception as e:
-        print(f"Error processing {img_details['path']}: {e}")
-
-    connection.commit()
-
-def update_image(id, **kwargs):
-    with get_connection(DB_NAME) as conn:
-        values = list(kwargs.values())
-        values.append(id)
-        values = tuple(values)
-
-        query = "UPDATE images SET "
-        query += "".join([f"{key} = ?, " for key in kwargs.keys()])
-        query = query[:-2] + " WHERE id = ?" # Remove the last comma from the query
-        
-        cur = conn.cursor()
-        cur.execute(query, values)
-
-        conn.commit()
-
-def delete_images(ids_to_delete, **kwargs):
-    with get_connection(DB_NAME) as conn:
-        query = "DELETE FROM images WHERE id IN "
-        query += f"({("?, " * len(ids_to_delete))[:-2]})"
-        print(query)
-        print(ids_to_delete)
-        cur = conn.cursor()
-        cur.execute(query, tuple(ids_to_delete))
-
-        conn.commit()
-
 
 def add_image_list(img_details_list):
     with get_connection(DB_NAME) as conn:
