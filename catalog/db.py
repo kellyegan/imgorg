@@ -112,6 +112,16 @@ def update_image(id, **kwargs):
 
         conn.commit()
 
+def delete_images(ids_to_delete, **kwargs):
+    with get_connection(DB_NAME) as conn:
+        query = "DELETE FROM images WHERE id IN "
+        query += f"({("?, " * len(ids_to_delete))[:-2]})"
+        print(query)
+        print(ids_to_delete)
+        cur = conn.cursor()
+        cur.execute(query, tuple(ids_to_delete))
+
+        conn.commit()
 
 
 def add_image_list(img_details_list):

@@ -7,6 +7,8 @@ from kivy.metrics import dp
 from ui.imagecard import ImageCard
 from ui.confirm_popup import ConfirmPopup
 
+from catalog.db import delete_images
+
 class ThumbnailBrowserScreen(Screen):
     columns = 1
     thumbnail_width = dp(200)
@@ -84,8 +86,11 @@ class ThumbnailBrowserScreen(Screen):
         if self.confirm_popup and self.confirm_popup.parent:
             return
         
+        ids_to_delete = [self.app.image_list[i]["id"] for i in self.app.selected_indexes]
+        
         def on_confirm():
-            print("Confirmed")
+            delete_images(ids_to_delete)
+            self.app.update_image_list()
             self.confirm_popup = None
 
         def on_cancel():
