@@ -30,13 +30,25 @@ def create_database(database_name):
     conn.commit()
     return conn
 
-def get_all_images():
-    with get_connection(DB_NAME) as conn:
+def query_db(query: str, values : tuple=(), on_results=None, conn=None):
+    if conn is None:
+        with get_connection(DB_NAME) as conn:
+            return query_db(query, values, on_results, conn=conn)
+    else:
         conn.row_factory = sqlite3.Row
         cur = conn.cursor()
-        cur.execute("SELECT * FROM images ORDER BY filename")
-        rows = cur.fetchall()
-        return [dict(row) for row in rows]
+        response = cur.execute(query, values)
+        conn.commit()
+        print(on_results == None)
+        return on_results(response)
+
+def get_all_images():
+    query = "SELECT * FROM images ORDER BY filename"
+
+    def on_response(response):
+        return [dict(row) for row in response.fetchall()]
+
+    return query_db(query, on_results=on_response)
     
 def is_duplicate(connection, filehash):
     cur = connection.cursor()
