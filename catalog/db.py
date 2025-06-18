@@ -63,20 +63,17 @@ def add_image(connection, img_details, ignore_duplicate = False):
 
     connection.commit()
 
-def update_image(id, **kwargs):
+def add_image_list(img_details_list):
     with get_connection(DB_NAME) as conn:
-        values = list(kwargs.values())
-        values.append(id)
-        values = tuple(values)
+        for img_details in img_details_list:
+            add_image(conn, img_details)
 
-        query = "UPDATE images SET "
-        query += "".join([f"{key} = ?, " for key in kwargs.keys()])
-        query = query[:-2] + " WHERE id = ?" # Remove the last comma from the query
-        
-        cur = conn.cursor()
-        cur.execute(query, values)
+def update_image(id, **kwargs):
+    query = "UPDATE images SET "
+    query += "".join([f"{key} = ?, " for key in kwargs.keys()])
+    query = query[:-2] + " WHERE id = ?" # Remove the last comma from the query
 
-        conn.commit()
+    query_db(query=query, values=list(kwargs.values()) + [id])
 
 def delete_images(ids_to_delete: list[int], conn=None):
     query = "DELETE FROM images WHERE id IN "
@@ -127,8 +124,3 @@ def find_in_catalog(images_by_hash):
                not_in_catalog.append(hash_group)
 
         return not_in_catalog, duplicate, in_catalog
-
-def add_image_list(img_details_list):
-    with get_connection(DB_NAME) as conn:
-        for img_details in img_details_list:
-            add_image(conn, img_details)
