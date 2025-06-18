@@ -32,9 +32,11 @@ def create_database(database_name):
 
 def query_db(query: str, values : tuple=(), on_results=None, conn=None):
     if conn is None:
+        print('No database connection provided. Creating a new one.')
         with get_connection(DB_NAME) as conn:
             return query_db(query, values, on_results, conn=conn)
     else:
+        print('Using provided database connection.')
         conn.row_factory = sqlite3.Row
         cur = conn.cursor()
         response = cur.execute(query, values)
@@ -50,16 +52,13 @@ def get_all_images():
 
     return query_db(query, on_results=on_response)
     
-def is_duplicate(connection, filehash):
-    cur = connection.cursor()
-    
-    cur.execute("SELECT * FROM images WHERE filehash = ?", (filehash,))
-    existing_image = cur.fetchone()
+def is_duplicate(filehash, conn=None):
+    query = "SELECT * FROM images WHERE filehash = ?"
 
-    if existing_image:
-        return existing_image
-    else:
-        return None
+    def on_response(response):
+        return response.fetchone()
+    
+    return query_db(query, values=(filehash,), on_results=on_response, conn=conn)
     
 def find_in_catalog(images_by_hash):
     not_in_catalog = []
@@ -69,7 +68,7 @@ def find_in_catalog(images_by_hash):
     with get_connection(DB_NAME) as conn:
         conn.row_factory = sqlite3.Row
         for hash_group in images_by_hash:
-            existing_image = is_duplicate(conn, hash_group['hash'])
+            existing_image = is_duplicate(hash_group['hash'], conn)
 
             if existing_image:
                 
