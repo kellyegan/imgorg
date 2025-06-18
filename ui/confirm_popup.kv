@@ -1,0 +1,26 @@
+<ConfirmPopup>:
+    size_hint: 0.5, 0.3
+    auto_dismiss: False
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(10)
+        spacing: dp(10)
+
+        Label:
+            text: root.message
+            text_size: self.width, None
+            size_hint_y: 0.7
+            halign: 'center'
+            valign: 'middle'
+
+        BoxLayout:
+            size_hint_y: 0.3
+            spacing: dp(10)
+
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+            Button:
+                text: "Confirm"
+                on_release: root.confirm()

@@ -5,10 +5,12 @@ from kivy.clock import Clock
 from kivy.metrics import dp
 
 from ui.imagecard import ImageCard
+from ui.confirm_popup import ConfirmPopup
 
 class ThumbnailBrowserScreen(Screen):
     columns = 1
     thumbnail_width = dp(200)
+    confirm_popup = None
 
     def __init__(self, **kw):
         super().__init__(**kw)
@@ -78,6 +80,27 @@ class ThumbnailBrowserScreen(Screen):
                 self.ids.thumbnail_grid.add_widget(card)
         Clock.schedule_once(self._update_column_size, 0.1)
 
+    def delete_selected(self):
+        if self.confirm_popup and self.confirm_popup.parent:
+            return
+        
+        def on_confirm():
+            print("Confirmed")
+            self.confirm_popup = None
+
+        def on_cancel():
+            print("Cancelled")
+            self.confirm_popup = None
+        
+        self.confirm_popup = ConfirmPopup(
+            title="Confirm",
+            message="Are you sure you want to delete the selected items?",
+        )
+        self.confirm_popup.on_confirm = on_confirm
+        self.confirm_popup.on_cancel = on_cancel
+
+        self.confirm_popup.open()
+
     def _on_active_index_change(self, instance, value):
         for thumb in self.ids.thumbnail_grid.children:
             if thumb.index == self.app.active_index:
@@ -111,6 +134,8 @@ class ThumbnailBrowserScreen(Screen):
             return
         elif key == 13: # Enter key
             self.app.toggle_selection(self.app.active_index)
+        elif key == 88 or key == 120:
+            self.delete_selected()
         
         if 'meta' in modifiers:
             # print(key)
