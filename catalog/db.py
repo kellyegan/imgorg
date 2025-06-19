@@ -46,9 +46,8 @@ def query_db(query: str, parameters : tuple=(), on_results=None, conn=None):
 def add_image(img_details, conn=None):
     # Skip adding duplicate image paths
     query = "SELECT * FROM images WHERE path = ?"
-
     if query_db(query, (img_details['path'],), on_results=lambda r: r.fetchone(), conn=conn):
-        return  # Silently skip this image
+        return
 
     try:
         query = """
