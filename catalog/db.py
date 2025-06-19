@@ -26,6 +26,19 @@ def create_database(database_name):
             filetype TEXT,
             filehash TEXT
         );
+                
+        CREATE TABLE IF NOT EXISTS collections (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT UNIQUE NOT NULL
+        );
+                
+        CREATE TABLE IF NOT EXISTS collection_images (
+            collection_id INTEGER,
+            image_id INTEGER,
+            FOREIGN KEY(collection_id) REFERENCES collections(id),
+            FOREIGN KEY(image_id) REFERENCES images(id),
+            PRIMARY KEY (collection_id, image_id)
+        );
     """)
     conn.commit()
     return conn
@@ -121,3 +134,12 @@ def find_in_catalog(images_by_hash):
                not_in_catalog.append(hash_group)
 
         return not_in_catalog, duplicate, in_catalog
+    
+def create_collection(name: str, conn=None):
+    query = "INSERT INTO collections (name) VALUES (?)"
+    query_db(query, parameters=(name,), on_results=None, conn=conn)
+
+def add_image_to_collection(image_id: int, collection_id: int, conn=None):
+    query = "INSERT OR IGNORE INTO collection_images (collection_id, image_id) VALUES (?, ?)"
+    query_db(query, parameters=(collection_id, image_id), on_results=None, conn=conn)
+
