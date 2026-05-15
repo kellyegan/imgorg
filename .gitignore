@@ -3,3 +3,4 @@
 .vscode/
 *.pyc
 .DS_Store
+.python-version
