@@ -2,7 +2,7 @@ import multiprocessing
 import uvicorn
 import asyncio
 from core.main import app
-from app.main import ImgOrgApp
+from ui.main import ImgOrgApp
 
 def start_api():
     # Use a low-level uvicorn config to ensure it handles signals well
