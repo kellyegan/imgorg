@@ -13,7 +13,7 @@ def get_connection(database_name):
 def create_database(database_name):
     conn = sqlite3.connect(database_name)
     cur = conn.cursor()
-    cur.execute("""
+    cur.executescript("""
         CREATE TABLE IF NOT EXISTS images (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             path TEXT UNIQUE,

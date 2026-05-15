@@ -5,7 +5,6 @@ from kivy.lang import Builder
 from kivy.config import Config
 from kivy.clock import Clock
 
-
 from kivy.properties import ListProperty, NumericProperty
 
 from ui.thumbnailbrowserscreen import ThumbnailBrowserScreen

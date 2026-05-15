@@ -24,6 +24,8 @@ class ImagePreviewScreen(Screen):
     def _on_active_index_change(self, instance, value):
         if not isinstance(value, int):
             return
+        if len(instance.image_list) < 1:
+            return
         
         self.current_image = instance.image_list[value]
 
