@@ -2,7 +2,7 @@ import multiprocessing
 import uvicorn
 import time
 import asyncio
-from bridge.main import app
+from core.main import app
 from app.main import ImgOrgApp
 
 def start_api():
