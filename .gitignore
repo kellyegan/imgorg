@@ -1,5 +1,6 @@
 .thumbnails/
 .vscode/
+data/
 *.db
 *.pyc
 .python-version
