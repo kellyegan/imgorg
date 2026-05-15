@@ -1,6 +1,6 @@
-*.db
 .thumbnails/
 .vscode/
+*.db
 *.pyc
-.DS_Store
 .python-version
+.DS_Store
