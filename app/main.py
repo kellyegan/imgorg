@@ -1,37 +1,57 @@
 import asyncio
 from kivy.app import App
-from kivy.uix.label import Label
+from kivy.uix.recycleview import RecycleView
 import httpx
+
+class ImageGrid(RecycleView):
+    pass
 
 class ImgOrgApp(App):
     def build(self):
-        self.label = Label(text="Connecting to Bridge...")
-        return self.label
+        return ImageGrid()
 
-    # This replaces the old 'run()' method
+    def on_stop(self):
+        # This signals the background loops to stop immediately
+        self.running = False
+
     async def app_func(self):
-        async def run_wrapper():
-            # We must await the app's start/build
-            await self.async_run(async_lib='asyncio')
-            print("App stopped")
+        self.running = True
+        # Create the tasks so we can manage them
+        ui_task = asyncio.create_task(self.async_run(async_lib='asyncio'))
+        poll_task = asyncio.create_task(self.fetch_images())
+        
+        # Wait for the UI to close
+        await ui_task
+        
+        # Once UI is closed, cancel the poller and wait for it to clean up
+        poll_task.cancel()
+        try:
+            await poll_task
+        except asyncio.CancelledError:
+            pass
+        print("UI and background tasks cleaned up.")
 
-        # Start the network check and the app simultaneously
-        await asyncio.gather(run_wrapper(), self.check_bridge())
-
-    async def check_bridge(self):
-        # Give the API a moment to boot up
-        await asyncio.sleep(2) 
+    async def fetch_images(self):
+        # Wait a moment for the bridge to be ready
+        await asyncio.sleep(2)
         
         async with httpx.AsyncClient() as client:
-            try:
-                # Use 127.0.0.1 instead of localhost to avoid IPv6 conflicts
-                response = await client.get("http://127.0.0.1:8000/health", timeout=5.0)
-                data = response.json()
-                self.label.text = f"Bridge {data['status']} - Version {data['version']}"
-            except Exception as e:
-                self.label.text = f"Bridge Offline: {str(e)}"
-
-if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(ImgOrgApp().app_func())
-    loop.close()
+            last_count = 0
+            # Use 'self.running' to check if we should keep polling
+            while self.running:
+                try:
+                    response = await client.get("http://127.0.0.1:8000/images", timeout=2.0)
+                    new_data = response.json()
+                    
+                    if len(new_data) != last_count:
+                        # Ensure we don't try to update if the root widget is gone
+                        if self.root:
+                            self.root.data = [{'source': f"http://127.0.0.1:8000/thumbnail/{img['id']}"} for img in new_data]
+                            last_count = len(new_data)
+                except Exception as e:
+                    print(f"Polling error: {e}")
+                
+                # Use a shorter sleep but check 'self.running' frequently
+                for _ in range(30): 
+                    if not self.running: break
+                    await asyncio.sleep(0.1)

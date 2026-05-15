@@ -1,33 +1,37 @@
 import multiprocessing
 import uvicorn
 import time
+import asyncio
 from bridge.main import app
 from app.main import ImgOrgApp
-import asyncio
 
 def start_api():
-    # Bind to 0.0.0.0 to ensure it's reachable on all local interfaces
-    uvicorn.run(app, host="0.0.0.0", port=8000, log_level="info")
+    # Use a low-level uvicorn config to ensure it handles signals well
+    config = uvicorn.Config(app, host="127.0.0.1", port=8000, log_level="error")
+    server = uvicorn.Server(config)
+    server.run()
 
 def start_ui():
-    # Use the new async entry point we created above
     ui_app = ImgOrgApp()
     asyncio.run(ui_app.app_func())
 
 if __name__ == "__main__":
-    multiprocessing.freeze_support() # Important for Windows
+    multiprocessing.freeze_support()
     
-    print("Starting Bridge...")
+    # Use 'spawn' instead of 'fork' for consistency across OSs
+    multiprocessing.set_start_method('spawn', force=True)
+
     api_proc = multiprocessing.Process(target=start_api)
     api_proc.start()
     
-    # Wait a second to let the port open
-    time.sleep(1)
-    
-    print("Starting UI...")
     try:
         start_ui()
+    except KeyboardInterrupt:
+        pass
     finally:
-        print("Shutting down...")
+        print("Closing Bridge...")
         api_proc.terminate()
-        api_proc.join()
+        api_proc.join(timeout=2)
+        if api_proc.is_alive():
+            api_proc.kill() # Force kill if it won't die
+        print("Goodbye.")
