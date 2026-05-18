@@ -4,14 +4,13 @@ from fastapi.responses import FileResponse
 from .database import init_db, get_db
 
 app = FastAPI()
-# init_db()
 
-# @app.get("/images")
-# def list_images():
-#     conn = get_db()
-#     images = conn.execute("SELECT * FROM images").fetchall()
-#     conn.close()
-#     return [dict(row) for row in images]
+@app.get("/images")
+def list_images():
+    conn = get_db()
+    images = conn.execute("SELECT * FROM images").fetchall()
+    conn.close()
+    return [dict(row) for row in images]
 
 # @app.post("/scan")
 # async def start_scan(path: str, background_tasks: BackgroundTasks):

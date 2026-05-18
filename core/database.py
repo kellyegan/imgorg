@@ -43,16 +43,32 @@ def init_db():
     # We'll define the table schema in Phase 2
     return db
 
-def add_image(path):
-    conn = get_db()
-    filename = os.path.basename(path)
-    extension = os.path.splitext(filename)[1].lower()
+def query_db(query: str, parameters : tuple=(), on_results=None, conn=None):
+    # If no database connection provided, create one
+    if conn is None:
+        with get_db() as conn:
+            return query_db(query, parameters, on_results, conn=conn)
+    else:
+        conn.row_factory = sqlite3.Row
+        cur = conn.cursor()
+        response = cur.execute(query, parameters)
+        conn.commit()
+        if on_results:
+            return on_results(response)
+
+def add_image(img_details, conn=None):
+    # Skip adding duplicate image paths
+    query = "SELECT * FROM images WHERE path = ?"
+    if query_db(query, (img_details['path'],), on_results=lambda r: r.fetchone(), conn=conn):
+        return
 
     try:
-        conn.execute("INSERT INTO images (path, filename, extension) VALUES (?, ?, ?)", (path, filename, extension))
-        conn.commit()
-    except sqlite3.IntegrityError:
-        pass
-    finally:
-        conn.close()
+        query = """
+            INSERT OR IGNORE INTO images (path, filename, created_at, modified_at, filesize, width, height, filetype, filehash)
+            VALUES (:path, :filename, :created_at, :modified_at, :filesize, :width, :height, :filetype, :filehash)
+        """   
+        query_db(query, img_details, on_results=None, conn=conn)
+    except Exception as e:
+        print(f"Error processing {img_details['path']}: {e}")
 
+    conn.commit()

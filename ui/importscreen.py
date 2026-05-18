@@ -13,7 +13,7 @@ import os
 from kivy.properties import ListProperty, StringProperty
 
 from catalog.db import add_image_list, update_image, find_in_catalog  # You must have this function in catalog/db.py
-from core.image_importer import find_images, group_by_hash
+from core.importer import find_images, group_by_hash
 
 
 class StatusLabel(Label):
