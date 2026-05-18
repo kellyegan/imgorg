@@ -153,13 +153,13 @@ class ImgOrgApp(App):
             while self.running:
                 try:
                     response = await client.get("http://127.0.0.1:8000/images", timeout=2.0)
-                    new_data = response.json()
+                    fetched_images = response.json()
                     
-                    if len(new_data) != last_count:
+                    if len(fetched_images) != last_count:
                         # Ensure we don't try to update if the root widget is gone
                         if self.root:
-                            self.root.data = [{'source': f"http://127.0.0.1:8000/thumbnail/{img['id']}"} for img in new_data]
-                            last_count = len(new_data)
+                            self.root.data = [{'source': f"http://127.0.0.1:8000/thumbnail/{img['id']}"} for img in fetched_images]
+                            last_count = len(fetched_images)
                 except Exception as e:
                     print(f"Polling error: {e}")
                 
