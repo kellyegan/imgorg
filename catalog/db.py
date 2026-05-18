@@ -2,7 +2,7 @@
 import sqlite3
 import os
 
-DB_NAME = 'catalog.db'
+DB_NAME = 'data/catalog.sqlite'
 
 def get_connection(database_name):
     if not os.path.exists(database_name):

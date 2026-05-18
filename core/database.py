@@ -20,12 +20,21 @@ def init_db():
         
     # SQLite Setup
     conn = sqlite3.connect(DB_PATH)
-    conn.execute('''CREATE TABLE IF NOT EXISTS images 
-                   (id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                    path TEXT UNIQUE, 
-                    filename TEXT, 
-                    extension TEXT,
-                    added_at DATETIME DEFAULT CURRENT_TIMESTAMP)''')
+    conn.execute('''CREATE TABLE IF NOT EXISTS images (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                        path TEXT UNIQUE, 
+                        filename TEXT, 
+                        extension TEXT,
+                        added_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                        created_at TEXT,
+                        modified_at TEXT,
+                        filesize INTEGER,
+                        width INTEGER,
+                        height INTEGER,
+                        filetype TEXT,
+                        filehash TEXT
+                    );
+                 ''')
     conn.commit()
     conn.close()
 
