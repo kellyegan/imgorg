@@ -171,6 +171,7 @@ class ImportScreen(Screen):
         if self.import_duplicates_list:
             selections = [choice[1] for choice in self.import_duplicates_list.get_state()]
 
+        # Update database with any selected new paths for existing images
         if self.catalog_duplicates_list:
             updates = self.catalog_duplicates_list.get_state()
             for update in updates:
@@ -182,6 +183,7 @@ class ImportScreen(Screen):
                     if "id" not in image_details.keys():
                         update_image(id, **image_details)
 
+        # Import new images to database
         add_image_list(self.images_to_import + selections)
 
         app = App.get_running_app()
