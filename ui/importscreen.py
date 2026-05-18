@@ -111,17 +111,17 @@ class ImportScreen(Screen):
         lists = self.ids.lists
         lists.clear_widgets()
 
-        if len(self.images_to_import) > 0:
-            import_count = len(self.images_to_import)
+        import_message = "No images to import."
+        import_count = len(self.images_to_import)
+
+        if import_count > 0:
             import_message = f"{import_count} image{'s' if import_count > 1 else ''} ready to import."
 
-            if self.already_imported_count > 0:
-                import_message += f" {self.already_imported_count} are already in the catalog."
+        if self.already_imported_count > 0:
+            import_message += f" {self.already_imported_count} are already in the catalog."
 
-            import_message_label = StatusLabel(text=import_message)
-            lists.add_widget(import_message_label)
-        else:
-            print("no images to import")
+        import_message_label = StatusLabel(text=import_message)
+        lists.add_widget(import_message_label)
 
         if len(self.duplicate_imports) > 0:
             self.import_duplicates_list = DuplicatesList(

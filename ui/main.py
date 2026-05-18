@@ -51,7 +51,6 @@ class ImgOrgApp(App):
 
         return self.sm
 
-    
     def update_image_list(self):
         # TODO: Replace with actual image list retrieval logic (maybe async)
         # self.image_list = get_all_images()
@@ -86,6 +85,15 @@ class ImgOrgApp(App):
         self._drop_timer = Clock.schedule_once(self._handle_drop_buffer, 0.1)
     
     def _handle_drop_buffer(self, dt):
+        print(f"Files dropped {len(self.drop_buffer)}")
+        # Setup import screen
+        import_screen = self.root.get_screen("import")
+        import_screen.process_import_paths(self.drop_buffer)
+
+        self.drop_buffer = []
+        self._drop_timer = None
+
+        self.view_import_screen()
         pass
 
     def set_active(self, index):
