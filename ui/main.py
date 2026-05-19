@@ -166,7 +166,7 @@ class ImgOrgApp(App):
                     if len(fetched_images) != last_count:
                         # Ensure we don't try to update if the root widget is gone
                         if self.root:
-                            self.root.data = [{'source': f"http://127.0.0.1:8000/thumbnail/{img['id']}"} for img in fetched_images]
+                            self.image_list = fetched_images #[{'source': f"http://127.0.0.1:8000/thumbnail/{img['id']}"} for img in fetched_images]
                             last_count = len(fetched_images)
                 except Exception as e:
                     print(f"Polling error: {e}")
