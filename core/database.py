@@ -38,9 +38,11 @@ def init_db():
     conn.commit()
     conn.close()
 
+    return conn
+
+def init_lancedb():
     # LanceDB Setup (Vector DB)
     db = lancedb.connect(VECTOR_PATH)
-    # We'll define the table schema in Phase 2
     return db
 
 def query_db(query: str, parameters : tuple=(), on_results=None, conn=None):
