@@ -10,7 +10,7 @@ from kivy.properties import DictProperty, ObjectProperty, StringProperty, Boolea
 
 import time
 
-from catalog.thumbnail import ensure_thumbnail
+from core.thumbnail import ensure_thumbnail
 
 class ClickableImage(ButtonBehavior, Image):
     """An Image that can be clicked like a button"""
