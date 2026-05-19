@@ -28,7 +28,7 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         pass
     finally:
-        print("Closing Bridge...")
+        print("Closing core...")
         api_proc.terminate()
         api_proc.join(timeout=2)
         if api_proc.is_alive():
