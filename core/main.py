@@ -7,18 +7,16 @@ app = FastAPI()
 
 init_db()
 
+@app.get("/status")
+def get_status():
+    return {"status": "online", "version": "0.1.0"}
+
 @app.get("/images")
 def list_images():
     conn = get_db()
     images = conn.execute("SELECT * FROM images").fetchall()
     conn.close()
     return [dict(row) for row in images]
-
-# @app.post("/scan")
-# async def start_scan(path: str, background_tasks: BackgroundTasks):
-#     # In a real app, we'd track status, but let's keep it simple
-#     background_tasks.add_task(scan_directory, path)
-#     return {"message": "Scanning started"}
 
 # @app.get("/thumbnail/{image_id}")
 # def get_thumbnail(image_id: int):
