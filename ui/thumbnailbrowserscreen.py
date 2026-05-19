@@ -7,7 +7,7 @@ from kivy.metrics import dp
 from ui.imagecard import ImageCard
 from ui.confirm_popup import ConfirmPopup
 
-from catalog.db import delete_images
+from core.database import delete_images
 
 class ThumbnailBrowserScreen(Screen):
     columns = 1
