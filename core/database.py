@@ -25,7 +25,7 @@ def init_db():
                         path TEXT UNIQUE, 
                         filename TEXT, 
                         extension TEXT,
-                        added_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                        added_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                         created_at TEXT,
                         modified_at TEXT,
                         filesize INTEGER,

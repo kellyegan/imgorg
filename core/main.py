@@ -5,6 +5,8 @@ from .database import init_db, get_db
 
 app = FastAPI()
 
+init_db()
+
 @app.get("/images")
 def list_images():
     conn = get_db()
