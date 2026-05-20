@@ -1,46 +1,47 @@
-from kivy.app import App
 from kivy.uix.screenmanager import Screen
-from kivy.uix.image import Image
+from kivy.properties import DictProperty
 from kivy.core.window import Window
-from kivy.clock import Clock
-
-from kivy.properties import ObjectProperty, StringProperty
+from kivy.app import App
 
 class ImagePreviewScreen(Screen):
-    current_image = ObjectProperty(None)
+    # Reactive property bound to your .kv file layout
+    current_image = DictProperty(None, allownone=True)
 
     def __init__(self, **kw):
         super().__init__(**kw)
-        self.current_image = None
-
         Window.bind(on_key_down=self._on_key_down)
-        app = App.get_running_app()
-        app.bind(active_index=self._on_active_index_change)
+        self.app = App.get_running_app()
 
-    def on_pre_enter(self):
-        app = App.get_running_app()
-        self._on_active_index_change(app, app.active_index)
-        
-    def _on_active_index_change(self, instance, value):
-        if not isinstance(value, int):
-            return
-        if len(instance.image_list) < 1:
-            return
-        
-        self.current_image = instance.image_list[value]
+    def on_enter(self):
+        """Fires automatically when switching to the preview screen."""
+        self._sync_current_image()
 
-    def _on_key_down(self, window, key, scancode, codepoint, modifier):
+    def _sync_current_image(self):
+        """Resolves the active image from the app's global state list."""
+        if 0 <= self.app.active_index < len(self.app.image_list):
+            self.current_image = self.app.image_list[self.app.active_index]
+        else:
+            self.current_image = None
+
+    def _on_key_down(self, window, key, scancode, codepoint, modifiers):
+        # Ignore keyboard inputs if this screen isn't actively displaying
         if self.manager.current != "preview":
-            return
-        
-        app = App.get_running_app()
-        num_images = len(app.image_list)
+            return False
 
-        if key in (27, 32):  # Escape key
-            Clock.schedule_once(lambda dt: app.view_thumbnail_browser(), 0.05)
-        elif key == 276:  # Left arrow key
-            new_index = (app.active_index - 1) % num_images
-            app.set_active(new_index)
-        elif key == 275:  # Right arrow key
-            new_index = (app.active_index + 1) % num_images
-            app.set_active(new_index)
+        if key == 27:  # Escape key -> drop back to thumbnail browser
+            self.manager.current = "browser"
+            return True
+
+        elif key == 276:  # Left arrow key -> previous image
+            if self.app.active_index > 0:
+                self.app.set_active(self.app.active_index - 1)
+                self._sync_current_image()
+            return True
+
+        elif key == 275:  # Right arrow key -> next image
+            if self.app.active_index < len(self.app.image_list) - 1:
+                self.app.set_active(self.app.active_index + 1)
+                self._sync_current_image()
+            return True
+
+        return False

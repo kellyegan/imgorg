@@ -7,7 +7,7 @@
     spacing: dp(25)
     padding: dp(50)
 
-    Image:
+    AsyncImage:
       id: image_preview
       fit_mode: "contain" # or scale-down
-      source: root.current_image["path"] if root.current_image is not None else ""
+      source: f"http://127.0.0.1:8000/image/{root.current_image['id']}" if root.current_image is not None else ""

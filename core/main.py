@@ -1,10 +1,10 @@
 # bridge/main.py (Update)
-from fastapi import FastAPI, BackgroundTasks
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.concurrency import run_in_threadpool
 from .database import init_db, get_db
 from .thumbnail import ensure_thumbnail
-from os import path
+import os
 
 app = FastAPI()
 
@@ -36,13 +36,17 @@ async def get_thumbnail(image_id: int):
 
 @app.get("/image/{image_id}")
 async def get_image(image_id: int):
-    conn = get_db()
-    image_data = conn.execute("SELECT path FROM images WHERE id = ?", (image_id,)).fetchone()
+    conn = get_db()  # Use your established database connection helper
+    cursor = conn.execute("SELECT path FROM images WHERE id = ?", (image_id,))
+    row = cursor.fetchone()
+    conn.close()
 
-    if image_data:
-        if path.isfile(image_data['path']):
-            return FileResponse(image_data['path'])
-        else:
-            return {"error": "Image is missing"}
+    if not row:
+        raise HTTPException(status_code=404, detail="Image database record missing")
     
-    return {"error": "Image not found"}
+    absolute_path = row['path']
+    
+    if not os.path.exists(absolute_path):
+        raise HTTPException(status_code=404, detail="Source file missing from disk")
+
+    return FileResponse(absolute_path)
