@@ -4,6 +4,7 @@ from fastapi.responses import FileResponse
 from fastapi.concurrency import run_in_threadpool
 from .database import init_db, get_db
 from .thumbnail import ensure_thumbnail
+from os import path
 
 app = FastAPI()
 
@@ -30,5 +31,18 @@ async def get_thumbnail(image_id: int):
 
         if thumb_path:
             return FileResponse(thumb_path)
+    
+    return {"error": "Image not found"}
+
+@app.get("/image/{image_id}")
+async def get_image(image_id: int):
+    conn = get_db()
+    image_data = conn.execute("SELECT path FROM images WHERE id = ?", (image_id,)).fetchone()
+
+    if image_data:
+        if path.isfile(image_data['path']):
+            return FileResponse(image_data['path'])
+        else:
+            return {"error": "Image is missing"}
     
     return {"error": "Image not found"}
