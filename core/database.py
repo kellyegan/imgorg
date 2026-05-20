@@ -1,9 +1,7 @@
 import sqlite3
-import lancedb
 import os
 
 DB_PATH = "data/catalog.sqlite"
-VECTOR_PATH = "data/vectors.lancedb"
 
 def get_db():
     # Check if the database exists before attempting to connect
@@ -53,11 +51,6 @@ def init_db():
     conn.close()
 
     return conn
-
-def init_lancedb():
-    # LanceDB Setup (Vector DB)
-    db = lancedb.connect(VECTOR_PATH)
-    return db
 
 def query_db(query: str, parameters : tuple=(), on_results=None, conn=None):
     # If no database connection provided, create one
