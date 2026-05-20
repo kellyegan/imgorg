@@ -2,26 +2,24 @@ import os
 from PIL import Image
 
 THUMBNAIL_DIR = "data/thumbnails"
-THUMBNAIL_SIZE = (200, 200)
+THUMBNAIL_SIZE = (512, 512)
 
-def ensure_thumbnail(image_path):
+def get_thumb_path(id):
+    return os.path.join(THUMBNAIL_DIR, f"thumb-{id:08}.webp")
+
+def ensure_thumbnail(id, image_path):
     """Generate a thumbnail and return its path."""
     if not os.path.exists(THUMBNAIL_DIR):
         os.makedirs(THUMBNAIL_DIR)
 
-    filename = os.path.basename(image_path)
-    name, ext = os.path.splitext(filename)
-    thumb_path = os.path.join(THUMBNAIL_DIR, f"{name}_thumb.webp")
+    thumb_path = get_thumb_path(id)
 
     if not os.path.exists(thumb_path):
         try:
             with Image.open(image_path) as img:
                 img = ensure_rgb(img)
                 img.thumbnail(THUMBNAIL_SIZE, Image.Resampling.LANCZOS)
-
-                kwargs = {}
-
-                img.save(thumb_path, format="webp")
+                img.save(thumb_path, format="webp", quality=25, method=6)
         except Exception as e:
             print(f"Failed to make thumbnail for {image_path}: {e}")
             return None

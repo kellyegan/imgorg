@@ -69,7 +69,7 @@ class ImageCard(BoxLayout):
         self.is_active = is_active
         self.is_selected = is_selected
 
-        thumb_path = ensure_thumbnail(image_data['path'])
+        thumb_path = ensure_thumbnail(image_data['id'], image_data['path'])
         if thumb_path is not None:
             self.thumb_source = thumb_path
 
