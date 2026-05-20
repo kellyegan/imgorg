@@ -1,16 +1,12 @@
 from kivy.app import App
 from kivy.core.window import Window
 from kivy.clock import Clock
-from kivy.metrics import dp
-
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import AsyncImage
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.properties import DictProperty, ObjectProperty, StringProperty, BooleanProperty, NumericProperty
 
 import time
-
-from core.thumbnail import ensure_thumbnail
 
 class ClickableImage(ButtonBehavior, AsyncImage):
     """An Image that can be clicked like a button"""
