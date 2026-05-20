@@ -1,6 +1,7 @@
 # bridge/main.py (Update)
 from fastapi import FastAPI, BackgroundTasks
 from fastapi.responses import FileResponse
+from fastapi.concurrency import run_in_threadpool
 from .database import init_db, get_db
 from .thumbnail import ensure_thumbnail
 
@@ -20,23 +21,14 @@ def list_images():
     return [dict(row) for row in images]
 
 @app.get("/thumbnail/{image_id}")
-def get_thumbnail(image_id: int):
+async def get_thumbnail(image_id: int):
     conn = get_db()
     image_data = conn.execute("SELECT path FROM images WHERE id = ?", (image_id,)).fetchone()
-    thumb_path = ensure_thumbnail(image_id, image_data['path'])
 
-    if thumb_path:
-        return FileResponse(thumb_path)
+    if image_data:
+        thumb_path = await run_in_threadpool(ensure_thumbnail, image_id, image_data['path'])
+
+        if thumb_path:
+            return FileResponse(thumb_path)
     
-    return {"error": "Not found"}
-
-# @app.get("/thumbnail/{image_id}")
-# def get_thumbnail(image_id: int):
-#     conn = get_db()
-#     image = conn.execute("SELECT path FROM images WHERE id = ?", (image_id,)).fetchone()
-#     conn.close()
-#     if image:
-#         # For Phase 1, we serve the full image. 
-#         # (We'll add Pillow resizing here in the next iteration).
-#         return FileResponse(image['path'])
-#     return {"error": "Not found"}
+    return {"error": "Image not found"}
