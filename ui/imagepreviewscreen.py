@@ -12,9 +12,12 @@ class ImagePreviewScreen(Screen):
         Window.bind(on_key_down=self._on_key_down)
         self.app = App.get_running_app()
 
-    def on_enter(self):
-        """Fires automatically when switching to the preview screen."""
+    def on_pre_enter(self, *args):
         self._sync_current_image()
+    
+    # def on_enter(self):
+    #     """Fires automatically when switching to the preview screen."""
+    #     self._sync_current_image()
 
     def _sync_current_image(self):
         """Resolves the active image from the app's global state list."""
